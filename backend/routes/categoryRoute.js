@@ -14,11 +14,11 @@ const {
 // Public routes
 router.get("/", getCategories);
 router.get("/featured", getFeaturedCategories);
-router.get("/:slug", getCategoryBySlug);
 router.get("/:slug/products", getCategoryProducts);
+router.get("/:slug", getCategoryBySlug);
 
 // Modification routes
-router.post("/create", createCategory);
+router.post("/new/create", createCategory);
 router.put("/update/:id", updateCategory);
 router.delete("/del/:id", deleteCategory);
 

@@ -10,10 +10,10 @@ const {
 
 const router = express.Router();
 
-router.post("/create", createBrand);
+router.post("/new/create", createBrand);
 router.get("/", getAllBrands);
 router.get("/featured", getFeaturedBrands);
-router.get("/:slug", getBrandBySlug);
 router.get("/:slug/products", getBrandProducts);
+router.get("/:slug", getBrandBySlug);
 
 module.exports = router;

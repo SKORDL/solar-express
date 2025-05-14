@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const slugify = require("slugify"); // 👈 Add this at the top
 
 const brandSchema = new mongoose.Schema(
   {
@@ -11,7 +12,6 @@ const brandSchema = new mongoose.Schema(
     },
     slug: {
       type: String,
-      required: true,
       unique: true,
       lowercase: true,
       index: true,
@@ -86,5 +86,18 @@ const brandSchema = new mongoose.Schema(
     timestamps: true,
   }
 );
+// Add this pre-save hook to maintain slug consistency
+brandSchema.pre("save", function (next) {
+  if (!this.slug || this.isModified("name")) {
+    this.slug = slugify(this.name, { lower: true, strict: true });
+  }
+  next();
+});
 
+// Static method to update product count when a product is added/removed
+brandSchema.statics.updateProductCount = async function (brandId) {
+  const Product = mongoose.model("Product");
+  const count = await Product.countDocuments({ brand: brandId });
+  await this.findByIdAndUpdate(brandId, { allProductCount: count });
+};
 module.exports = mongoose.model("Brand", brandSchema);

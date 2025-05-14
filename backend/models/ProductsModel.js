@@ -221,32 +221,39 @@ const productSchema = new mongoose.Schema(
 );
 
 // Middleware
-productSchema.pre("save", function (next) {
-  // Slug generation
+// Add this pre-save hook to update related Brand & Category
+productSchema.pre("save", async function (next) {
+  // Update slug if name changes
   if (!this.slug || this.isModified("name")) {
-    this.slug = slugify(this.name, {
-      lower: true,
-      strict: true,
-      replacement: "-",
-      trim: true,
-    });
+    this.slug = slugify(this.name, { lower: true, strict: true });
   }
 
-  // Update timestamp
-  if (this.isModified()) {
-    this.updatedAt = Date.now();
+  // Update discount percentage
+  if (this.originalPrice && this.originalPrice > this.price) {
+    this.discountPercentage = Math.round(
+      ((this.originalPrice - this.price) / this.originalPrice) * 100
+    );
   }
 
-  // Calculate discount percentage if not set
-  if (this.isModified("price") || this.isModified("originalPrice")) {
-    if (this.originalPrice && this.originalPrice > this.price) {
-      this.discountPercentage = Math.round(
-        ((this.originalPrice - this.price) / this.originalPrice) * 100
-      );
-    }
+  // If this is a new product, update Brand & Category
+  if (this.isNew) {
+    await Promise.all([
+      mongoose.model("Brand").updateProductCount(this.brand),
+      mongoose.model("Category").updateProductCount(this.category),
+      mongoose.model("Category").updatePopularBrands(this.category),
+    ]);
   }
 
   next();
+});
+
+// Update counts when a product is deleted
+productSchema.post("remove", async function (doc) {
+  await Promise.all([
+    mongoose.model("Brand").updateProductCount(doc.brand),
+    mongoose.model("Category").updateProductCount(doc.category),
+    mongoose.model("Category").updatePopularBrands(doc.category),
+  ]);
 });
 
 // Indexes

@@ -13,7 +13,7 @@ const {
 router.post("/create", createProduct);
 
 router.get("/", getAllProducts); // GET all products
-router.get("/:slug", getProductBySlug); // GET product by ID
 router.get("/category/:slug", getProductsByCategory);
+router.get("/:slug", getProductBySlug); // GET product by ID
 
 module.exports = router;

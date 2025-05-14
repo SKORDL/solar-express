@@ -73,7 +73,8 @@ const deleteCategory = asyncHandler(async (req, res) => {
     throw new Error("Category not found");
   }
 
-  await category.remove();
+  // Fixed: Changed from remove() to deleteOne() which is the modern approach
+  await category.deleteOne();
   res.json({ message: "Category removed" });
 });
 
@@ -136,28 +137,46 @@ const getFeaturedCategories = asyncHandler(async (req, res) => {
 const getCategoryProducts = asyncHandler(async (req, res) => {
   const { slug } = req.params;
 
+  console.log("Fetching category products for slug:", slug);
+
+  // 1. Find category by slug
   const category = await Category.findOne({ slug, isActive: true });
   if (!category) {
-    res.status(404);
-    throw new Error("Category not found");
+    console.error("Category not found for slug:", slug);
+    return res
+      .status(404)
+      .json({ success: false, message: "Category not found" });
   }
 
-  const products = await Product.find({
-    category: category._id,
-    isActive: true,
-  })
-    .select(
-      "name slug price originalPrice discountPercentage images isFeatured isBestSeller"
-    )
-    .sort({ name: 1 });
+  console.log("Category found:", category);
 
-  res.json({
+  // 2. Build query - Fixed: Added a check for isActive field existence
+  const query = {
+    category: category._id,
+    ...(typeof Product.schema.paths.isActive !== "undefined"
+      ? { isActive: true }
+      : {}),
+  };
+
+  console.log("Query for products:", query);
+
+  // 3. Fetch all products without pagination
+  const products = await Product.find(query)
+    .select("name slug price originalPrice discountPercentage images")
+    .sort("-createdAt");
+
+  console.log("Products fetched:", products);
+
+  // 4. Return response
+  res.status(200).json({
+    success: true,
     products,
     category: {
       name: category.name,
       slug: category.slug,
       image: category.image,
     },
+    total: products.length,
   });
 });
 

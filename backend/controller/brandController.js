@@ -72,7 +72,9 @@ const getBrandBySlug = asyncHandler(async (req, res) => {
   // Get all products count for this brand
   const productCount = await Product.countDocuments({
     brand: brand._id,
-    isActive: true,
+    ...(typeof Product.schema.paths.isActive !== "undefined"
+      ? { isActive: true }
+      : {}),
   });
 
   // Update the product count if different
@@ -85,7 +87,9 @@ const getBrandBySlug = asyncHandler(async (req, res) => {
   const bestSellers = await Product.find({
     brand: brand._id,
     isBestSeller: true,
-    isActive: true,
+    ...(typeof Product.schema.paths.isActive !== "undefined"
+      ? { isActive: true }
+      : {}),
   })
     .select("name slug price images")
     .limit(4);
@@ -128,31 +132,35 @@ const getFeaturedBrands = asyncHandler(async (req, res) => {
 const getBrandProducts = asyncHandler(async (req, res) => {
   const { slug } = req.params;
 
+  console.log("Fetching brand products for slug:", slug);
+
   // 1. Find brand by slug
   const brand = await Brand.findOne({ slug, isActive: true });
   if (!brand) {
-    return res.status(404).json({
-      success: false,
-      message: "Brand not found",
-    });
+    console.error("Brand not found for slug:", slug);
+    return res.status(404).json({ success: false, message: "Brand not found" });
   }
 
-  // 2. Find products with that brand's ObjectId
-  const products = await Product.find({
-    brand: brand._id, // Use the ObjectId of the brand to find products
-    isActive: true,
-  }).select(
-    "name slug price originalPrice discountPercentage images specifications isFeatured isBestSeller"
-  );
+  console.log("Brand found:", brand);
 
-  if (!products.length) {
-    return res.status(404).json({
-      success: false,
-      message: "No products found for this brand",
-    });
-  }
+  // 2. Build query with a check for isActive field existence
+  const query = {
+    brand: brand._id,
+    ...(typeof Product.schema.paths.isActive !== "undefined"
+      ? { isActive: true }
+      : {}),
+  };
 
-  // 3. Return result
+  console.log("Query for products:", query);
+
+  // 3. Fetch all products without pagination
+  const products = await Product.find(query)
+    .select("name slug price originalPrice discountPercentage images")
+    .sort("-createdAt");
+
+  console.log("Products fetched:", products);
+
+  // 4. Return response
   res.status(200).json({
     success: true,
     products,
@@ -161,6 +169,7 @@ const getBrandProducts = asyncHandler(async (req, res) => {
       slug: brand.slug,
       logo: brand.logo,
     },
+    total: products.length,
   });
 });
 

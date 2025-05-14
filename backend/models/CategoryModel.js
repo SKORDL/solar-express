@@ -110,4 +110,25 @@ categorySchema.virtual("subcategories", {
   foreignField: "parentCategory",
 });
 
+// Static method to update product count
+categorySchema.statics.updateProductCount = async function (categoryId) {
+  const Product = mongoose.model("Product");
+  const count = await Product.countDocuments({ category: categoryId });
+  await this.findByIdAndUpdate(categoryId, { productCount: count });
+};
+
+// Static method to update popular brands (based on most products)
+categorySchema.statics.updatePopularBrands = async function (categoryId) {
+  const Product = mongoose.model("Product");
+  const popularBrands = await Product.aggregate([
+    { $match: { category: categoryId } },
+    { $group: { _id: "$brand", count: { $sum: 1 } } },
+    { $sort: { count: -1 } },
+    { $limit: 5 }, // Top 5 brands
+  ]);
+
+  const brandIds = popularBrands.map((b) => b._id);
+  await this.findByIdAndUpdate(categoryId, { popularBrands: brandIds });
+};
+
 module.exports = mongoose.model("Category", categorySchema);
