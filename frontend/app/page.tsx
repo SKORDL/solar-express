@@ -41,10 +41,13 @@ export default function Home() {
       <TopBrands />
 
       {/* Installation Services Section */}
-      <InstallationServices />
-
+      <InstallationServices />  
+      
+      {/* Flash Deals Section */}
+      <FlashDeals />
+      
       {/* Solar Calculator Section */}
-      <SolarCalculator />
+      {/* <SolarCalculator /> */}
 
       {/* Customer Reviews Section */}
       <CustomerReviews />

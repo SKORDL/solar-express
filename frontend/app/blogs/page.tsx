@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Search } from "lucide-react"
+import Link from "next/link"
 
 export default function BlogsPage() {
   return (
@@ -52,7 +53,9 @@ export default function BlogsPage() {
               <span className="text-sm">By Admin</span>
               <span className="text-sm text-gray-500">April 20, 2025</span>
             </div>
-            <Button className="bg-amber-500 hover:bg-amber-600">Read More</Button>
+            <Button className="bg-amber-500 hover:bg-amber-600" asChild>
+              <Link href="/blogs/solar-energy-trends-2025">Read More</Link>
+            </Button>
           </div>
         </div>
       </div>
@@ -71,9 +74,12 @@ export default function BlogsPage() {
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et
                 dolore magna aliqua.
               </p>
-              <a href="#" className="text-amber-600 text-sm font-medium">
+              <Link
+                href={`/blogs/${["how-to-choose-solar-panels", "understanding-net-metering", "solar-battery-storage-worth-investment", "solar-maintenance-tips", "solar-tax-incentives", "solar-myths-debunked"][index % 6]}`}
+                className="text-amber-600 text-sm font-medium"
+              >
                 Read More
-              </a>
+              </Link>
             </div>
           </div>
         ))}
