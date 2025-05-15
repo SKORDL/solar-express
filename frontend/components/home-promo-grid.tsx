@@ -7,7 +7,8 @@ import { Button } from "@/components/ui/button"
 export default function HomePromoGrid() {
   return (
     <div className="my-6">
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-3 max-h-[700px]">
+      {/* For desktop view - visible on md screens and up */}
+      <div className="hidden md:grid md:grid-cols-4 gap-3 max-h-[700px]">
         {/* Top Row */}
         <Link
           href="/brand/jinko-solar"
@@ -130,14 +131,140 @@ export default function HomePromoGrid() {
         </Link>
       </div>
 
-      {/* Additional promotional banner */}
-      <div className="mt-6 bg-[#1a5ca4] rounded-lg overflow-hidden relative h-[150px] group hover:shadow-lg transition-all">
-        <div className="flex flex-col md:flex-row h-full justify-between items-center p-6 relative z-10">
+      {/* For mobile view - visible only on small screens */}
+      <div className="md:hidden">
+        
+
+        {/* Second row - Jinko Solar and Solar Options */}
+        <div className="grid grid-cols-2 gap-4 mb-4">
+          {/* Jinko Solar */}
+          <Link
+            href="/brand/jinko-solar"
+            className="bg-gray-100 rounded-lg overflow-hidden relative h-[140px] shadow flex items-start p-4"
+          >
+            <div className="bg-white rounded-full w-16 h-16 flex items-center justify-center shadow-md z-10">
+              <span className="text-[#1a5ca4] font-bold text-xs">JINKO SOLAR</span>
+            </div>
+            <Image
+              src="https://images.unsplash.com/photo-1509391366360-2e959784a276?q=80&w=1000&auto=format&fit=crop"
+              alt="Solar Panel Close-up"
+              fill
+              className="object-cover"
+            />
+          </Link>
+          
+          {/* Solar Options */}
+          <Link
+            href="/category/solar-panels"
+            className="bg-green-100 rounded-lg overflow-hidden p-4 h-[140px] relative shadow flex flex-col justify-between"
+          >
+            <div className="z-10">
+              <h2 className="text-sm font-bold text-[#1a5ca4] mb-1">1,000s of solar options,</h2>
+              <h3 className="text-sm font-bold text-[#1a5ca4] mb-1">for way less</h3>
+              <span className="text-[#1a5ca4] font-semibold text-xs hover:underline">Shop now</span>
+            </div>
+            <div className="flex justify-end">
+              <div className="bg-blue-400 rounded-full w-12 h-12 flex items-center justify-center text-white text-xs font-bold p-1 z-10">
+                solar event
+              </div>
+            </div>
+            <Image
+              src="https://images.unsplash.com/photo-1613665813446-82a78c468a1d?q=80&w=1000&auto=format&fit=crop"
+              alt="Solar Panel Installation"
+              fill
+              className="object-cover opacity-20"
+            />
+          </Link>
+        </div>
+
+        {/* Third row - Flash Deals (wider) and Premium Solar Solutions */}
+        <div className="grid grid-cols-5 gap-4 mb-4">
+          {/* Flash Deals - Wide card */}
+          <Link
+            href="/flash-deals"
+            className="col-span-3 bg-yellow-100 rounded-lg overflow-hidden p-4 h-[150px] relative shadow flex flex-col justify-between"
+          >
+            <div className="z-10">
+              <h2 className="text-lg font-bold text-[#1a5ca4] mb-2">Up to 50% off</h2>
+              <span className="text-[#1a5ca4] font-semibold text-sm hover:underline">Shop now</span>
+            </div>
+            <div className="flex justify-end">
+              <h2 className="text-2xl font-bold text-[#1a5ca4]">Flash Deals</h2>
+            </div>
+            <Image
+              src="https://images.unsplash.com/photo-1592833167665-45dd5913bc13?q=80&w=1000&auto=format&fit=crop"
+              alt="Solar Inverter"
+              fill
+              className="object-cover opacity-20"
+            />
+          </Link>
+          
+          {/* Premium Solar Solutions - Narrow card */}
+          <Link
+            href="/premium-solutions"
+            className="col-span-2 bg-gray-200 rounded-lg overflow-hidden p-3 h-[150px] relative shadow flex flex-col justify-between"
+          >
+            <div className="z-10">
+              <h2 className="text-sm font-bold text-[#1a5ca4] mb-1">Premium solar solutions for homes</h2>
+              <span className="text-[#1a5ca4] font-semibold text-xs hover:underline">Shop now</span>
+            </div>
+            <Image
+              src="https://images.unsplash.com/photo-1631252984129-b10dbfd74855?q=80&w=1000&auto=format&fit=crop"
+              alt="Premium Solar Home Installation"
+              fill
+              className="object-cover opacity-30"
+            />
+          </Link>
+        </div>
+
+        {/* Fourth row - Summer Energy and SolarExpress+ */}
+        <div className="grid grid-cols-1 gap-4">
+          {/* Summer Energy Savings */}
+          <Link
+            href="/summer-deals"
+            className="bg-blue-100 rounded-lg overflow-hidden p-4 h-[120px] relative shadow"
+          >
+            <div className="relative z-10">
+              <h2 className="text-lg font-bold text-[#1a5ca4] mb-1">Summer energy</h2>
+              <h2 className="text-lg font-bold text-[#1a5ca4] mb-2">savings from PKR 25,000</h2>
+              <span className="text-[#1a5ca4] font-semibold text-sm hover:underline">Shop now</span>
+            </div>
+            <Image
+              src="https://images.unsplash.com/photo-1611365892117-00d770df8a5f?q=80&w=1000&auto=format&fit=crop"
+              alt="Solar Panels in Summer"
+              fill
+              className="object-cover opacity-20"
+            />
+          </Link>
+
+          {/* SolarExpress+ */}
+          <Link
+            href="/services/installation"
+            className="bg-orange-100 rounded-lg overflow-hidden p-4 h-[130px] relative shadow"
+          >
+            <div className="relative z-10">
+              <h2 className="text-lg font-bold text-[#1a5ca4] mb-1">Free installation with SolarExpress+</h2>
+              <p className="text-gray-700 text-sm mb-2">One free consultation per customer. T&C apply.</p>
+              <span className="text-[#1a5ca4] font-semibold text-sm hover:underline">Try SolarExpress+ for free</span>
+            </div>
+            <Image
+              src="https://images.unsplash.com/photo-1497440001374-f26997328c1b?q=80&w=1000&auto=format&fit=crop"
+              alt="Solar Panel Installation"
+              fill
+              className="object-cover opacity-20"
+            />
+          </Link>
+        </div>
+      </div>
+
+      {/* Additional promotional banner - responsive for both desktop and mobile */}
+      <div className="mt-6 bg-[#1a5ca4] rounded-lg overflow-hidden relative h-auto py-4 md:h-[150px] group hover:shadow-lg transition-all">
+        <div className="flex flex-col md:flex-row h-full justify-between items-center p-4 md:p-6 relative z-10">
           <div className="text-white">
-            <h2 className="text-2xl font-bold mb-2">Free shipping on orders over PKR 50,000</h2>
-            <p className="mb-0">That's SolarExpress+. One free trial per customer. T&C apply.</p>
+            <h2 className="text-xl md:text-2xl font-bold mb-2">Free shipping on orders over PKR 50,000</h2>
+            <p className="text-sm md:text-base mb-4 md:mb-0">That's SolarExpress+. One free trial per customer. T&C apply.</p>
           </div>
-          <Button className="bg-white text-[#1a5ca4] hover:bg-gray-100 mt-4 md:mt-0">Try SolarExpress+ for free</Button>
+          <Button className="bg-white text-[#1a5ca4] hover:bg-gray-100 w-full md:w-auto">Try SolarExpress+ for free</Button>
         </div>
         <Image
           src="https://images.unsplash.com/photo-1584276433295-4b5de880a29a?q=80&w=1000&auto=format&fit=crop"

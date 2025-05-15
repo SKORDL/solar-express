@@ -132,8 +132,8 @@ const navItems = [
   { name: "Inverters", href: "/store?category=inverters" },
   { name: "Batteries", href: "/store?category=batteries" },
   { name: "Complete Systems", href: "/store?category=complete-systems" },
-  { name: "Installation", href: "/store?category=installation" },
-  { name: "Accessories", href: "/store?category=accessories" },
+  { name: "Insurance", href: "/insurance" },
+  { name: "Installment Plans", href: "/installment" },
   { name: "Blogs", href: "/blogs" },
   { name: "Contact", href: "/contact" },
 ]
