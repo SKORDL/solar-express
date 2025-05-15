@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input"
 import PriceTicker from "./price-ticker"
 import Link from "next/link"
 
-// Define the category structure with brands and sub-categories
+// Updated category structure with Pakistani brands
 const categoryData = [
   {
     name: "Solar Panels",
@@ -28,34 +28,55 @@ const categoryData = [
         url: "/brand/longi-solar",
       },
       {
-        name: "JA Solar",
-        subcategories: ["MBB Half-Cell", "Bifacial Modules", "All Black Series", "Commercial Series"],
-        url: "/brand/ja-solar",
+        name: "Orient Solar",
+        subcategories: ["Mono Panels", "Poly Panels", "Residential Series", "Commercial Series"],
+        url: "/brand/orient-solar",
       },
+      {
+        name: "Waaree Solar",
+        subcategories: ["Bifacial Series", "Mono PERC", "Solar Rooftop", "Commercial Systems"],
+        url: "/brand/waaree-solar",
+      },
+    
     ],
   },
   {
     name: "Inverters",
     brands: [
       {
-        name: "Growatt",
-        subcategories: ["String Inverters", "Hybrid Inverters", "Microinverters", "Commercial Inverters"],
-        url: "/brand/growatt",
-      },
-      {
-        name: "SMA",
-        subcategories: ["Sunny Boy Series", "Sunny Tripower", "Sunny Island", "Monitoring Systems"],
-        url: "/brand/sma",
-      },
-      {
         name: "Fronius",
         subcategories: ["Primo Series", "Symo Series", "Hybrid Solutions", "Commercial Solutions"],
         url: "/brand/fronius",
       },
       {
-        name: "Huawei",
-        subcategories: ["Residential Inverters", "Commercial Inverters", "Smart Energy Centers", "Monitoring"],
-        url: "/brand/huawei",
+        name: "Luxpower",
+        subcategories: ["Hybrid Inverters", "Off-Grid Inverters", "Grid-Tie Inverters", "Commercial Solutions"],
+        url: "/brand/luxpower",
+      },
+      {
+        name: "Growatt",
+        subcategories: ["String Inverters", "Hybrid Inverters", "Microinverters", "Commercial Inverters"],
+        url: "/brand/growatt",
+      },
+      {
+        name: "1ON",
+        subcategories: ["Hybrid Inverters", "Off-Grid Inverters", "Low Voltage", "High Voltage"],
+        url: "/brand/1on",
+      },
+      {
+        name: "Fox ESS",
+        subcategories: ["Hybrid Inverters", "Battery Solutions", "Single Phase", "Three Phase"],
+        url: "/brand/fox-ess",
+      },
+      {
+        name: "Ziehl",
+        subcategories: ["Industrial Inverters", "High Power Solutions", "Commercial Systems", "Monitoring"],
+        url: "/brand/ziehl",
+      },
+      {
+        name: "Knox",
+        subcategories: ["Hybrid Inverters", "Off-Grid Solutions", "Residential", "Commercial"],
+        url: "/brand/knox",
       },
     ],
   },
@@ -73,14 +94,19 @@ const categoryData = [
         url: "/brand/pylontech",
       },
       {
-        name: "LG Chem",
-        subcategories: ["RESU Series", "RESU Prime", "Commercial Solutions", "Accessories"],
-        url: "/brand/lg-chem",
+        name: "AGS Batteries",
+        subcategories: ["Lithium Series", "Lead Acid", "Deep Cycle", "Solar Batteries"],
+        url: "/brand/ags-batteries",
       },
       {
-        name: "BYD",
-        subcategories: ["Battery-Box Premium", "HVS Series", "HVM Series", "Commercial Solutions"],
-        url: "/brand/byd",
+        name: "Phoenix Power",
+        subcategories: ["Lithium Iron", "Gel Batteries", "Solar Storage", "Backup Systems"],
+        url: "/brand/phoenix-power",
+      },
+      {
+        name: "Exide",
+        subcategories: ["Solar Specific", "Tubular Batteries", "Industrial Series", "Home Systems"],
+        url: "/brand/exide",
       },
     ],
   },
@@ -98,9 +124,34 @@ const categoryData = [
         url: "/brand/ironridge",
       },
       {
-        name: "Schletter",
-        subcategories: ["Roof Systems", "Ground Systems", "Carport Systems", "Custom Solutions"],
-        url: "/brand/schletter",
+        name: "Pak Solar",
+        subcategories: ["Rooftop Frames", "Ground Mounting", "Carport Systems", "Custom Solutions"],
+        url: "/brand/pak-solar",
+      },
+      {
+        name: "ATS Mounts",
+        subcategories: ["Residential Mounts", "Commercial Systems", "Tracking Systems", "Fixed Systems"],
+        url: "/brand/ats-mounts",
+      },
+    ],
+  },
+  {
+    name: "Complete Systems",
+    brands: [
+      {
+        name: "Solar Packages",
+        subcategories: ["3kW Systems", "5kW Systems", "10kW Systems", "Commercial Systems"],
+        url: "/complete-systems",
+      },
+      {
+        name: "Off-Grid Solutions",
+        subcategories: ["Residential", "Commercial", "Industrial", "Agricultural"],
+        url: "/off-grid-solutions",
+      },
+      {
+        name: "Hybrid Systems",
+        subcategories: ["With Battery", "Without Battery", "Grid-Assisted", "Backup Solutions"],
+        url: "/hybrid-systems",
       },
     ],
   },
@@ -118,9 +169,14 @@ const categoryData = [
         url: "/brand/enphase",
       },
       {
-        name: "Tigo",
-        subcategories: ["Optimizers", "Monitoring", "Safety Solutions", "Commercial Solutions"],
-        url: "/brand/tigo",
+        name: "MTECH",
+        subcategories: ["Connectors", "Cables", "Junction Boxes", "Fuses & Breakers"],
+        url: "/brand/mtech",
+      },
+      {
+        name: "PEL Solar",
+        subcategories: ["Meters", "DC Disconnects", "Combiner Boxes", "AC/DC Cables"],
+        url: "/brand/pel-solar",
       },
     ],
   },
@@ -144,7 +200,9 @@ export default function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [activeCategory, setActiveCategory] = useState(null)
   const [activeBrand, setActiveBrand] = useState(null)
+  const [activeMobileCategory, setActiveMobileCategory] = useState(null)
   const menuRef = useRef(null)
+  const mobileSidebarRef = useRef(null)
 
   // Close menu when clicking outside
   useEffect(() => {
@@ -154,13 +212,17 @@ export default function Header() {
         setActiveCategory(null)
         setActiveBrand(null)
       }
+      
+      if (mobileSidebarRef.current && !mobileSidebarRef.current.contains(event.target) && isMobileMenuOpen) {
+        setIsMobileMenuOpen(false)
+      }
     }
 
     document.addEventListener("mousedown", handleClickOutside)
     return () => {
       document.removeEventListener("mousedown", handleClickOutside)
     }
-  }, [])
+  }, [isMobileMenuOpen])
 
   // Handle category hover
   const handleCategoryHover = (index) => {
@@ -171,6 +233,11 @@ export default function Header() {
   // Handle brand hover
   const handleBrandHover = (index) => {
     setActiveBrand(index)
+  }
+
+  // Toggle mobile category
+  const toggleMobileCategory = (index) => {
+    setActiveMobileCategory(activeMobileCategory === index ? null : index)
   }
 
   // Navigate to brand page
@@ -195,7 +262,7 @@ export default function Header() {
           {/* Logo and location */}
           <div className="flex items-center gap-4">
             <Link href="/" className="flex items-center">
-              <div className="w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center">
+              <div className="w-14 h-14 md:w-16 md:h-16 rounded-full flex items-center justify-center">
                 <img src="/solar-express-logo-09.png" alt="Solar Express Logo" className="w-full h-full object-cover" />
               </div>
             </Link>
@@ -211,7 +278,7 @@ export default function Header() {
           </div>
 
           {/* Search bar */}
-          <div className="flex-1 max-w-3xl mx-4">
+          <div className="flex-1 max-w-2xl mx-4">
             <div className="relative">
               <Input
                 type="text"
@@ -235,11 +302,6 @@ export default function Header() {
                 <span className="text-sm font-medium text-white">Account</span>
                 <ChevronDown className="h-4 w-4 text-white/80 ml-1" />
               </div>
-            </div>
-
-            <div className="hidden md:flex flex-col items-end cursor-pointer">
-              <span className="text-xs text-white/80">My Items</span>
-              <span className="text-sm font-medium text-white">Wishlist</span>
             </div>
 
             <Link href="/cart" className="relative">
@@ -291,7 +353,9 @@ export default function Header() {
                   {categoryData.map((category, index) => (
                     <div
                       key={index}
-                      className={`px-4 py-3 cursor-pointer hover:bg-gray-100 ${activeCategory === index ? "bg-gray-100 font-medium text-[#1a5ca4]" : "text-gray-800"}`}
+                      className={`px-4 py-3 cursor-pointer hover:bg-gray-100 ${
+                        activeCategory === index ? "bg-gray-100 font-medium text-[#1a5ca4]" : "text-gray-800"
+                      }`}
                       onMouseEnter={() => handleCategoryHover(index)}
                     >
                       <div className="flex items-center justify-between">
@@ -308,7 +372,9 @@ export default function Header() {
                     {categoryData[activeCategory].brands.map((brand, index) => (
                       <div
                         key={index}
-                        className={`px-4 py-3 cursor-pointer hover:bg-gray-50 ${activeBrand === index ? "bg-gray-50 font-medium text-[#1a5ca4]" : "text-gray-800"}`}
+                        className={`px-4 py-3 cursor-pointer hover:bg-gray-50 ${
+                          activeBrand === index ? "bg-gray-50 font-medium text-[#1a5ca4]" : "text-gray-800"
+                        }`}
                         onMouseEnter={() => handleBrandHover(index)}
                         onClick={() => navigateToBrand(brand.url)}
                       >
@@ -352,8 +418,8 @@ export default function Header() {
             )}
           </div>
 
-          {/* Main navigation */}
-          <nav className="flex ml-4">
+          {/* Main navigation - scrollable */}
+          <nav className="flex ml-4 overflow-x-auto hide-scrollbar">
             {navItems.map((item, index) => (
               <Link key={index} href={item.href} className="px-3 py-2 text-sm hover:text-[#f26522] whitespace-nowrap">
                 {item.name}
@@ -363,48 +429,129 @@ export default function Header() {
         </div>
       </div>
 
-      {/* Mobile menu */}
-      {isMobileMenuOpen && (
-        <div className="md:hidden bg-white border-t border-gray-200">
-          <div className="p-4 border-b border-gray-200">
-            <div className="flex items-center gap-2">
-              <User className="h-5 w-5 text-[#1a5ca4]" />
-              <div>
-                <span className="text-sm font-medium">Sign In</span>
-                <span className="text-xs text-gray-500 block">Account & Orders</span>
-              </div>
+      {/* Mobile menu - animated sidebar */}
+      <div 
+        ref={mobileSidebarRef}
+        className={`md:hidden fixed top-0 right-0 h-full bg-white shadow-xl z-50 transition-all duration-300 ease-in-out overflow-y-auto w-4/5 ${
+          isMobileMenuOpen ? "translate-x-0" : "translate-x-full"
+        }`}
+        style={{ maxWidth: "320px" }}
+      >
+        {/* Mobile header */}
+        <div className="flex items-center justify-between p-4 bg-[#1a5ca4] text-white">
+          <div className="flex items-center gap-2">
+            <div className="w-12 h-12 rounded-full flex items-center justify-center">
+              <img src="/solar-express-logo-09.png" alt="Solar Express Logo" className="w-full h-full object-cover" />
             </div>
+            <span className="text-lg font-bold">Solar Express</span>
           </div>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="text-white"
+            onClick={() => setIsMobileMenuOpen(false)}
+          >
+            <X className="h-6 w-6" />
+          </Button>
+        </div>
 
-          <div className="p-4">
-            <div className="mb-4">
-              <div className="font-medium mb-2">Shop by Department</div>
-              <div className="space-y-2">
-                {categoryData.map((category, index) => (
-                  <div key={index} className="border-b border-gray-100 pb-2">
-                    <Link href="#" className="text-[#1a5ca4]">
-                      {category.name}
-                    </Link>
-                  </div>
-                ))}
-              </div>
+        {/* User section */}
+        <div className="p-4 border-b border-gray-200 bg-[#0e4a8a] text-white">
+          <div className="flex items-center gap-3">
+            <div className="bg-[#f26522] rounded-full w-10 h-10 flex items-center justify-center">
+              <User className="h-5 w-5 text-white" />
             </div>
-
             <div>
-              <div className="font-medium mb-2">Quick Links</div>
-              <div className="space-y-2">
-                {navItems.map((item, index) => (
-                  <div key={index} className="border-b border-gray-100 pb-2">
-                    <Link href={item.href} className="text-[#1a5ca4]">
-                      {item.name}
-                    </Link>
-                  </div>
-                ))}
-              </div>
+              <span className="text-sm font-medium">Sign In / Register</span>
+              <span className="text-xs text-white/80 block">Manage your account</span>
             </div>
           </div>
         </div>
+
+        {/* Departments section - scrollable horizontally */}
+        <div className="py-3 px-2 border-b border-gray-200 bg-gray-50">
+          <h3 className="text-lg font-medium px-2 mb-2 text-[#1a5ca4]">Departments</h3>
+          <div className="flex overflow-x-auto pb-2 hide-scrollbar">
+            {categoryData.map((category, index) => (
+              <div 
+                key={index} 
+                className="flex-shrink-0 mr-2 w-24"
+                onClick={() => toggleMobileCategory(index)}
+              >
+                <div className={`rounded-lg bg-white border p-2 flex flex-col items-center justify-center h-24 shadow-sm ${
+                  activeMobileCategory === index ? "border-[#f26522]" : "border-gray-200"
+                }`}>
+                  <div className="h-12 w-12 rounded-full bg-[#1a5ca4]/10 flex items-center justify-center mb-1">
+                    <img src={`/icons/${category.name.toLowerCase().replace(/\s+/g, '-')}.png`} alt={category.name} className="h-8 w-8" />
+                  </div>
+                  <span className="text-xs text-center font-medium">{category.name}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Active category brands */}
+        {activeMobileCategory !== null && (
+          <div className="p-4 border-b border-gray-200">
+            <h3 className="font-medium mb-2 text-[#1a5ca4] flex items-center">
+              <ChevronRight className="h-4 w-4 mr-1" />
+              {categoryData[activeMobileCategory].name}
+            </h3>
+            <div className="space-y-2">
+              {categoryData[activeMobileCategory].brands.map((brand, index) => (
+                <Link 
+                  href={brand.url} 
+                  key={index}
+                  className="block p-3 rounded-lg bg-gray-50 hover:bg-gray-100"
+                >
+                  <div className="flex items-center justify-between">
+                    <span className="font-medium">{brand.name}</span>
+                    <ChevronRight className="h-4 w-4 text-[#f26522]" />
+                  </div>
+                  <div className="text-xs text-gray-500 mt-1">
+                    {brand.subcategories.slice(0, 2).join(", ")}
+                    {brand.subcategories.length > 2 ? " & more" : ""}
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Main navigation links for mobile */}
+        <nav className="p-4">
+          {navItems.map((item, index) => (
+            <Link 
+              key={index} 
+              href={item.href}
+              className="flex items-center justify-between p-3 border-b border-gray-100"
+            >
+              <span className="text-[#1a5ca4]">{item.name}</span>
+              <ChevronRight className="h-4 w-4 text-gray-400" />
+            </Link>
+          ))}
+        </nav>
+      </div>
+
+      {/* Overlay when mobile menu is open */}
+      {isMobileMenuOpen && (
+        <div 
+          className="md:hidden fixed inset-0 bg-black/50 z-40"
+          onClick={() => setIsMobileMenuOpen(false)}
+        />
       )}
+
+      {/* Add custom styles for hiding scrollbars but allowing scroll */}
+      <style jsx global>{`
+        .hide-scrollbar {
+          -ms-overflow-style: none;  /* IE and Edge */
+          scrollbar-width: none;  /* Firefox */
+        }
+        .hide-scrollbar::-webkit-scrollbar {
+          display: none;  /* Chrome, Safari and Opera */
+        }
+      `}</style>
     </header>
   )
 }

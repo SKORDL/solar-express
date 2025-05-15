@@ -14,11 +14,11 @@ export default function HomePromoGrid() {
           href="/brand/jinko-solar"
           className="col-span-1 bg-gray-100 rounded-lg overflow-hidden h-[300px] flex items-center justify-center relative group hover:shadow-lg transition-all"
         >
-          <div className="absolute bottom-8 left-8 z-10">
+          {/* <div className="absolute bottom-8 left-8 z-10">
             <div className="bg-white rounded-full w-24 h-24 flex items-center justify-center shadow-md">
               <span className="text-[#1a5ca4] font-bold text-sm">JINKO SOLAR</span>
             </div>
-          </div>
+          </div> */}
           <Image
             src="https://images.unsplash.com/photo-1509391366360-2e959784a276?q=80&w=1000&auto=format&fit=crop"
             alt="Solar Panel Close-up"
@@ -37,13 +37,13 @@ export default function HomePromoGrid() {
               <h2 className="text-2xl font-bold text-[#1a5ca4] mb-4">for way less</h2>
               <span className="text-[#1a5ca4] font-semibold hover:underline">Shop now</span>
             </div>
-            <div className="flex justify-end">
+            {/* <div className="flex justify-end">
               <div className="w-40 h-40 relative">
                 <div className="absolute top-0 left-0 bg-blue-400 rounded-full w-16 h-16 flex items-center justify-center text-white text-xs font-bold p-2 z-10">
                   solar event
                 </div>
               </div>
-            </div>
+            </div> */}
           </div>
           <Image
             src="https://images.unsplash.com/photo-1613665813446-82a78c468a1d?q=80&w=1000&auto=format&fit=crop"
