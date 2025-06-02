@@ -39,7 +39,7 @@ export default function FlashDeals() {
       name: "Jinko 550W Tiger Neo N-Type Solar Panel",
       originalPrice: 42500,
       salePrice: 36999,
-      image: "/placeholder.svg?height=150&width=150",
+      image: "/19.webp?height=150&width=150",
       discount: "13% OFF",
     },
     {
@@ -47,7 +47,7 @@ export default function FlashDeals() {
       name: "Growatt 5kW SPF 5000ES Hybrid Inverter",
       originalPrice: 185000,
       salePrice: 159000,
-      image: "/placeholder.svg?height=150&width=150",
+      image: "/14.webp?height=150&width=150",
       discount: "14% OFF",
     },
     {
@@ -55,7 +55,7 @@ export default function FlashDeals() {
       name: "Tesla Powerwall 13.5kWh Battery",
       originalPrice: 950000,
       salePrice: 899000,
-      image: "/placeholder.svg?height=150&width=150",
+      image: "/16.webp?height=150&width=150",
       discount: "5% OFF",
     },
     {
@@ -63,7 +63,7 @@ export default function FlashDeals() {
       name: "Complete 5kW Solar System Package",
       originalPrice: 750000,
       salePrice: 675000,
-      image: "/placeholder.svg?height=150&width=150",
+      image: "/17.webp?height=150&width=150",
       discount: "10% OFF",
     },
   ]

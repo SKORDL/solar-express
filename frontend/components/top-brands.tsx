@@ -1,30 +1,37 @@
 import Link from "next/link"
+import Image from "next/image"
 
 export default function TopBrands() {
   const brands = [
     {
-      name: "Jinko Solar",
-      slug: "jinko-solar",
+      name: "Fronus",
+      slug: "Fronus",
+      logo: "/fronus-logo.png" // Add your image path
     },
     {
-      name: "Canadian Solar",
-      slug: "canadian-solar",
+      name: "Knox",
+      slug: "Knox",
+      logo: "/Knox_logo.png" // Add your image path
     },
     {
-      name: "Longi Solar",
-      slug: "longi-solar",
+      name: "LuxPower",
+      slug: "LuxPower",
+      logo: "/Luxpower-logo.png" // Add your image path
     },
     {
-      name: "Growatt",
-      slug: "growatt",
+      name: "Ziewnic",
+      slug: "Ziewnic",
+      logo: "/Ziewnic-Logo.png" // Add your image path
     },
     {
-      name: "Tesla",
-      slug: "tesla",
+      name: "1on Inverters",
+      slug: "1on",
+      logo: "/1on-logo.png" // Add your image path
     },
     {
-      name: "SMA",
-      slug: "sma",
+      name: "FOX",
+      slug: "FOX",
+      logo: "/fox-logo.webp" // Add your image path
     },
   ]
 
@@ -39,10 +46,16 @@ export default function TopBrands() {
             className="border border-gray-200 rounded-lg p-4 h-24 flex items-center justify-center hover:border-[#1a5ca4] hover:shadow-sm transition-all"
           >
             <div className="text-center">
-              <div className="bg-gray-100 w-16 h-10 mx-auto mb-2 flex items-center justify-center">
-                <span className="text-gray-400 text-xs">[{brand.name} Logo]</span>
+              <div className="w-18 h-14 mx-auto mb-2 flex items-center justify-center">
+                <Image 
+                  src={brand.logo}
+                  alt={`${brand.name} Logo`}
+                  width={104}
+                  height={80}
+                  className="object-contain"
+                />
               </div>
-              <span className="text-sm font-medium">{brand.name}</span>
+              {/* <span className="text-sm font-medium">{brand.name}</span> */}
             </div>
           </Link>
         ))}

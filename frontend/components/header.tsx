@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from "react"
 import { Search, ShoppingCart, User, Menu, X, ChevronDown, ChevronRight, MapPin } from "lucide-react"
+import { Sun, Battery, Zap, Home, Wrench, ShieldCheck } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import PriceTicker from "./price-ticker"
@@ -11,6 +12,9 @@ import Link from "next/link"
 const categoryData = [
   {
     name: "Solar Panels",
+    icon: Sun,
+    color: "bg-blue-100",
+    iconColor: "text-[#1a5ca4]",
     brands: [
       {
         name: "Jinko Solar",
@@ -42,6 +46,9 @@ const categoryData = [
   },
   {
     name: "Inverters",
+    icon: Zap,
+    color: "bg-amber-100",
+    iconColor: "text-amber-600",
     brands: [
       {
         name: "Fronius",
@@ -82,6 +89,9 @@ const categoryData = [
   },
   {
     name: "Batteries",
+    icon: Battery,
+    color: "bg-green-100",
+    iconColor: "text-green-600",
     brands: [
       {
         name: "Tesla",
@@ -111,7 +121,10 @@ const categoryData = [
     ],
   },
   {
-    name: "Mounting Systems",
+    name: "Tools",
+    icon: Wrench,
+    color: "bg-red-100",
+    iconColor: "text-red-600",
     brands: [
       {
         name: "K2 Systems",
@@ -137,6 +150,9 @@ const categoryData = [
   },
   {
     name: "Complete Systems",
+    icon: Home,
+    color: "bg-purple-100",
+    iconColor: "text-purple-600",
     brands: [
       {
         name: "Solar Packages",
@@ -157,6 +173,9 @@ const categoryData = [
   },
   {
     name: "Accessories",
+    icon: ShieldCheck,
+    color: "bg-teal-100",
+    iconColor: "text-teal-600",
     brands: [
       {
         name: "Victron Energy",
@@ -257,13 +276,13 @@ export default function Header() {
       </div>
 
       {/* Main header */}
-      <div className="bg-[#1a5ca4] py-3 px-4">
+      <div className="bg-[#1a5ca4] py-3 md:px-14 lg:px-24">
         <div className="container mx-auto flex items-center justify-between">
           {/* Logo and location */}
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-4 ">
             <Link href="/" className="flex items-center">
-              <div className="w-14 h-14 md:w-16 md:h-16 rounded-full flex items-center justify-center">
-                <img src="/solar-express-logo-09.png" alt="Solar Express Logo" className="w-full h-full object-cover" />
+              <div className="w-16 h-8 md:w-22 md:h-11 rounded-full flex items-center justify-center">
+                <img src="/logo-crop.PNG" alt="Solar Express Logo" className="w-auto h-auto object-cover" />
               </div>
             </Link>
 
@@ -282,7 +301,7 @@ export default function Header() {
             <div className="relative">
               <Input
                 type="text"
-                placeholder="Search solar panels, inverters, batteries and more..."
+                placeholder="Search here"
                 className="w-full py-2 pl-4 pr-10 rounded-full border-0 shadow-sm"
               />
               <Button
@@ -317,11 +336,11 @@ export default function Header() {
             {/* Mobile menu toggle */}
             <Button
               variant="ghost"
-              size="icon"
+              size="mobileMenu"  // Use the new mobileMenu size variant
               className="md:hidden text-white"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             >
-              {isMobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+              {isMobileMenuOpen ? <X /> : <Menu />}
             </Button>
           </div>
         </div>
@@ -329,7 +348,7 @@ export default function Header() {
 
       {/* Navigation bar */}
       <div className="bg-[#0e4a8a] text-white py-1 px-4 hidden md:block border-t border-[#1a5ca4]/30">
-        <div className="container mx-auto flex items-center">
+        <div className="container md:px-14 lg:px-14 flex items-center">
           {/* Departments dropdown */}
           <div className="relative" ref={menuRef}>
             <Button
@@ -337,7 +356,7 @@ export default function Header() {
               className="flex items-center gap-2 font-medium text-white"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
             >
-              <Menu className="h-5 w-5" />
+              <Menu className="h-8 w-8" />
               <span>Departments</span>
               <ChevronDown className="h-4 w-4" />
             </Button>
@@ -430,20 +449,20 @@ export default function Header() {
       </div>
 
       {/* Mobile menu - animated sidebar */}
-      <div 
-        ref={mobileSidebarRef}
-        className={`md:hidden fixed top-0 right-0 h-full bg-white shadow-xl z-50 transition-all duration-300 ease-in-out overflow-y-auto w-4/5 ${
-          isMobileMenuOpen ? "translate-x-0" : "translate-x-full"
-        }`}
-        style={{ maxWidth: "320px" }}
-      >
+        <div 
+          ref={mobileSidebarRef}
+          className={`md:hidden fixed top-0 left-0 h-full bg-white shadow-xl z-50 transition-all duration-300 ease-in-out overflow-y-auto w-4/5 ${
+            isMobileMenuOpen ? "transform translate-x-0" : "transform -translate-x-full"
+          }`}
+          style={{ maxWidth: "320px" }}
+        >
         {/* Mobile header */}
         <div className="flex items-center justify-between p-4 bg-[#1a5ca4] text-white">
           <div className="flex items-center gap-2">
-            <div className="w-12 h-12 rounded-full flex items-center justify-center">
-              <img src="/solar-express-logo-09.png" alt="Solar Express Logo" className="w-full h-full object-cover" />
+            <div className="w-12 h-6 rounded-full flex items-center justify-center">
+              <img src="/logo-crop.PNG" alt="Solar Express Logo" className="w-full h-full object-cover" />
             </div>
-            <span className="text-lg font-bold">Solar Express</span>
+            <span className="text-xl font-bold ml-6"></span>
           </div>
           <Button
             variant="ghost"
@@ -482,7 +501,7 @@ export default function Header() {
                   activeMobileCategory === index ? "border-[#f26522]" : "border-gray-200"
                 }`}>
                   <div className="h-12 w-12 rounded-full bg-[#1a5ca4]/10 flex items-center justify-center mb-1">
-                    <img src={`/icons/${category.name.toLowerCase().replace(/\s+/g, '-')}.png`} alt={category.name} className="h-8 w-8" />
+                    <category.icon className={`h-8 w-8 ${category.iconColor}`}/>
                   </div>
                   <span className="text-xs text-center font-medium">{category.name}</span>
                 </div>

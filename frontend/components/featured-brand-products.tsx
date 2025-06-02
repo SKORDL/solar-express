@@ -10,19 +10,19 @@ export default function FeaturedBrandProducts() {
       id: "jinko-400w-panel",
       name: "JinkoSolar ProSeries 400W Mono Solar Panel with Half-Cell Technology",
       price: 125000,
-      image: "/placeholder.svg?height=180&width=180",
+      image: "/11.png?height=180&width=180",
     },
     {
       id: "jinko-370w-panel",
       name: "JinkoSolar Original 370W Mono Solar Panel with Optimized Cell Design",
       price: 95000,
-      image: "/placeholder.svg?height=180&width=180",
+      image: "/12.png?height=180&width=180",
     },
     {
       id: "jinko-450w-panel",
       name: "JinkoSolar ProSeries 450W XL Mono Solar Panel with Bifacial Technology",
       price: 150000,
-      image: "/placeholder.svg?height=180&width=180",
+      image: "/13.png?height=180&width=180",
     },
   ]
 
@@ -47,34 +47,35 @@ export default function FeaturedBrandProducts() {
       <div className="block lg:hidden">
         {/* Brand promotion first on mobile */}
         <div className="mb-6">
-          <Link
-            href="/brand/jinko"
-            className="bg-gray-100 rounded-lg overflow-hidden relative group hover:shadow-lg transition-all block h-full"
-          >
-            <div className="p-6 h-full flex flex-col">
-              <div className="mb-2 text-sm font-semibold text-[#1a5ca4]">Get it fast</div>
-              <h2 className="text-3xl font-bold text-[#1a5ca4] mb-4">
-                Solar <br />
-                Panels
-              </h2>
-              <button className="bg-white text-black hover:bg-gray-50 px-4 py-2 rounded-full text-sm font-medium">
-                Shop now
-              </button>
+  <Link
+    href="/brand/jinko"
+    className="rounded-lg overflow-hidden relative group hover:shadow-lg transition-all block h-full"
+  >
+    {/* Background image covering entire card */}
+    <div className="absolute inset-0 z-0">
+      <Image
+        src="/seven.PNG"
+        alt="JinkoSolar Panel"
+        fill
+        className="object-cover group-hover:scale-105 transition-transform duration-300"
+      />
+      {/* Semi-transparent overlay for better text visibility */}
+      <div className="absolute inset-0 bg-gradient-to-b from-white/30 via-white/10 to-white/30"></div>
+    </div>
 
-              <div className="mt-auto flex justify-center">
-                <div className="h-48 flex items-end justify-center">
-                  <Image
-                    src="/placeholder.svg?height=180&width=180"
-                    alt="JinkoSolar Panel"
-                    width={180}
-                    height={180}
-                    className="object-contain group-hover:scale-105 transition-transform duration-300"
-                  />
-                </div>
-              </div>
-            </div>
-          </Link>
-        </div>
+    {/* Content */}
+    <div className="p-6 h-full flex flex-col relative z-10">
+      <div className="mb-2 text-sm font-semibold text-[#1a5ca4]">Get it fast</div>
+      <h2 className="text-3xl font-bold text-[#1a5ca4] mb-4">
+        Solar <br />
+        Panels
+      </h2>
+      <button className="bg-white text-black hover:bg-gray-50 px-4 py-2 rounded-full text-sm font-medium w-fit">
+        Shop now
+      </button>
+    </div>
+  </Link>
+</div>
 
         {/* Products grid for mobile - original layout with fixes */}
         <div className="space-y-4">
@@ -174,32 +175,33 @@ export default function FeaturedBrandProducts() {
 
         {/* Right side - Brand promotion (35% width) */}
         <Link
-          href="/brand/jinko"
-          className="lg:w-[35%] bg-gray-100 rounded-lg overflow-hidden relative group hover:shadow-lg transition-all"
-        >
-          <div className="p-6 h-full flex flex-col">
-            <div className="mb-2 text-sm font-semibold text-[#1a5ca4]">Get it fast</div>
-            <h2 className="text-3xl font-bold text-[#1a5ca4] mb-4">
-              Solar <br />
-              Panels
-            </h2>
-            <button className="bg-white text-black hover:bg-gray-50 px-4 py-2 rounded-full text-sm font-medium">
-              Shop now
-            </button>
+  href="/brand/jinko"
+  className="lg:w-[35%] rounded-lg overflow-hidden relative group hover:shadow-lg transition-all"
+>
+  {/* Background image covering entire card */}
+  <div className="absolute inset-0 z-0">
+    <Image
+      src="/seven.PNG"
+      alt="JinkoSolar Panel"
+      fill
+      className="object-cover group-hover:scale-105 transition-transform duration-300"
+    />
+    {/* Semi-transparent overlay for better text visibility */}
+    <div className="absolute inset-0  from-white/30 via-white/10 to-white/30"></div>
+  </div>
 
-            <div className="mt-auto flex justify-center">
-              <div className="h-48 flex items-end justify-center">
-                <Image
-                  src="/placeholder.svg?height=180&width=180"
-                  alt="JinkoSolar Panel"
-                  width={180}
-                  height={180}
-                  className="object-contain group-hover:scale-105 transition-transform duration-300"
-                />
-              </div>
-            </div>
-          </div>
-        </Link>
+  {/* Content */}
+  <div className="p-6 h-full flex flex-col relative z-10">
+    {/* <div className="mb-2 text-sm font-semibold text-[#1a5ca4]">Get it fast</div>
+    <h2 className="text-3xl font-bold text-[#1a5ca4] mb-4">
+      Solar <br />
+      Panels
+    </h2> */}
+    {/* <button className="mt-48 bg-white text-black hover:bg-gray-50 px-4 py-2 rounded-full text-sm font-medium w-fit">
+      Shop now
+    </button> */}
+  </div>
+</Link>
       </div>
     </div>
   )

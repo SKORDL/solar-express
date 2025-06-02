@@ -24,7 +24,7 @@ export default function FeaturedPromoCards() {
               <Button className="bg-[#1a5ca4] hover:bg-[#0e4a8a] w-fit">Shop Now</Button>
             </div>
             <Image
-              src="https://images.unsplash.com/photo-1559302995-f1d7e0b9a5cd?q=80&w=1000&auto=format&fit=crop"
+              src="eleven.png"
               alt="Solar Panels"
               fill
               className="object-cover opacity-20 group-hover:scale-105 transition-transform duration-300"
@@ -46,7 +46,7 @@ export default function FeaturedPromoCards() {
               <Button className="bg-[#1a5ca4] hover:bg-[#0e4a8a] w-fit">Shop Now</Button>
             </div>
             <Image
-              src="https://images.unsplash.com/photo-1592833167665-45dd5913bc13?q=80&w=1000&auto=format&fit=crop"
+              src="nine.png"
               alt="Solar Inverter"
               fill
               className="object-cover opacity-20 group-hover:scale-105 transition-transform duration-300"
@@ -68,7 +68,7 @@ export default function FeaturedPromoCards() {
               <Button className="bg-[#1a5ca4] hover:bg-[#0e4a8a] w-fit">Shop Now</Button>
             </div>
             <Image
-              src="https://images.unsplash.com/photo-1637159125633-de3d95ab1c4c?q=80&w=1000&auto=format&fit=crop"
+              src="twelve.png"
               alt="Solar Batteries"
               fill
               className="object-cover opacity-20 group-hover:scale-105 transition-transform duration-300"
