@@ -7,6 +7,8 @@ const path = require("path");
 
 const { errorMiddleware } = require("./error/error");
 
+const cookieParser = require("cookie-parser");
+
 const dbConnect = require("./database/dbConnect");
 
 dotenv.config();
@@ -34,6 +36,7 @@ app.use(
 app.use(morgan("dev")); // Logging
 app.use(express.json()); // Parse JSON bodies
 app.use(express.urlencoded({ extended: true })); // Parse URL-encoded bodies
+app.use(cookieParser()); // Parse cookies
 
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
