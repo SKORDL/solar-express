@@ -106,12 +106,27 @@ const productSchema = new mongoose.Schema(
         stock: {
           type: Number,
           required: true,
-          min: 0,
+          min: 1,
+        },
+        sold: {
+          type: Number,
+          default: 0,
         },
         price: {
           type: Number,
           min: 0,
         },
+        originalPrice: {
+          type: Number,
+          min: 0,
+        },
+        discountPercentage: {
+          type: Number,
+          default: 0,
+          min: 0,
+          max: 100,
+        },
+
         images: [String],
         specifications: [
           // Variant-specific specs
@@ -217,6 +232,7 @@ const productSchema = new mongoose.Schema(
   {
     toJSON: { virtuals: true },
     toObject: { virtuals: true },
+    timestamps: true,
   }
 );
 
