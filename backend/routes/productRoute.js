@@ -11,12 +11,14 @@ const {
   getProductsByCategory,
   updateProduct,
   deleteProduct,
+  debog,
 } = require("../controller/productController");
 
 // Create product route with file upload
 router.post("/create", authMiddleware, isAdmin, createProduct);
 
 router.get("/", getAllProducts); // GET all products
+router.get("/debog", debog);
 router.put("/update/:id", authMiddleware, isAdmin, updateProduct); // Update product by ID
 router.delete("/delete/:id", authMiddleware, isAdmin, deleteProduct); // Update product by ID
 router.get("/category/:slug", getProductsByCategory);

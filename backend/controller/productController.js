@@ -165,7 +165,7 @@ const getCategoryFilters = asyncHandler(async (req, res) => {
 
   const filters = CATEGORY_FILTERS[categorySlug] || {
     specifications: [],
-    priceRange: { min: 0, max: 100000 },
+    priceRange: { min: 0, max: 1000000 },
     sortOptions: ["price_asc", "price_desc"],
   };
 
@@ -292,11 +292,11 @@ const getAllProducts = asyncHandler(async (req, res) => {
     page = 1,
     limit = 12,
     search,
-    ...specFilters // All remaining query params are treated as specification filters
+    ...specFilters
   } = req.query;
 
-  // Build base query
-  let query = { isActive: true };
+  // Start with empty query
+  let query = {};
 
   // Category filter
   if (category) {
@@ -330,7 +330,6 @@ const getAllProducts = asyncHandler(async (req, res) => {
   const specFilterConditions = [];
   Object.entries(specFilters).forEach(([key, value]) => {
     if (value && value !== "") {
-      // Handle range filters (e.g., wattage_min, wattage_max)
       if (key.endsWith("_min")) {
         const specName = key.replace("_min", "");
         specFilterConditions.push({
@@ -352,7 +351,6 @@ const getAllProducts = asyncHandler(async (req, res) => {
           },
         });
       } else {
-        // Handle exact match filters
         specFilterConditions.push({
           "specifications.items": {
             $elemMatch: {
@@ -648,6 +646,19 @@ const getProductBySlug = asyncHandler(async (req, res) => {
   res.status(200).json({ success: true, product });
 });
 
+const debog = asyncHandler(async (req, res) => {
+  try {
+    const allProducts = await Product.find({}).limit(10);
+    res.json({
+      rawProducts: allProducts,
+      count: allProducts.length,
+    });
+  } catch (error) {
+    console.error("Debug error:", error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
 module.exports = {
   createProduct,
   updateProduct,
@@ -657,4 +668,5 @@ module.exports = {
   getProductsByCategory,
   getCategoryFilters,
   getGlobalFilters,
+  debog,
 };
