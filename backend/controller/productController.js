@@ -22,7 +22,7 @@ function getSortObject(sort) {
   }
 }
 
-// Get all products with sorting
+// Get all products with sorting and pagination
 const getAllProducts = asyncHandler(async (req, res) => {
   const sort = req.query.sort || "newest";
   const sortObj = getSortObject(sort);
@@ -56,7 +56,9 @@ const getAllProducts = asyncHandler(async (req, res) => {
         "rating_min",
         "rating_max",
         "sort",
-        "category"
+        "category",
+        "page",
+        "limit"
       ].includes(key)
     ) {
       // For range: field_min/field_max, for select: field=value
@@ -75,21 +77,39 @@ const getAllProducts = asyncHandler(async (req, res) => {
   // Category filter (optional)
   if (req.query.category) query.category = req.query.category;
 
-  const products = await Product.find(query)
-    .populate("brand", "name slug")
-    .populate("category", "name slug")
-    .select(
-      "name slug price originalPrice discountPercentage images specifications isFeatured isBestSeller reviews viewCount variants"
-    )
-    .sort(sortObj);
+  // Pagination logic
+  const page = parseInt(req.query.page) > 0 ? parseInt(req.query.page) : 1;
+  const limit = parseInt(req.query.limit) > 0 ? parseInt(req.query.limit) : 20;
+  const skip = (page - 1) * limit;
+
+  const [products, total] = await Promise.all([
+    Product.find(query)
+      .populate("brand", "name slug")
+      .populate("category", "name slug")
+      .select(
+        "name slug price originalPrice discountPercentage images specifications isFeatured isBestSeller reviews viewCount variants"
+      )
+      .sort(sortObj)
+      .skip(skip)
+      .limit(limit),
+    Product.countDocuments(query)
+  ]);
 
   res.json({
     success: true,
     products,
+    pagination: {
+      page,
+      limit,
+      total,
+      pages: Math.ceil(total / limit),
+      hasNext: page * limit < total,
+      hasPrev: page > 1
+    }
   });
 });
 
-// Get products by category with sorting
+// Get products by category with sorting and pagination
 const getProductsByCategory = asyncHandler(async (req, res) => {
   const { slug } = req.params;
   const sort = req.query.sort || "newest";
@@ -132,7 +152,9 @@ const getProductsByCategory = asyncHandler(async (req, res) => {
         "price_max",
         "rating_min",
         "rating_max",
-        "sort"
+        "sort",
+        "page",
+        "limit"
       ].includes(key)
     ) {
       if (key.endsWith("_min")) {
@@ -147,12 +169,22 @@ const getProductsByCategory = asyncHandler(async (req, res) => {
     }
   });
 
-  const products = await Product.find(query)
-    .populate("brand", "name slug")
-    .select(
-      "name slug price originalPrice discountPercentage images specifications isFeatured isBestSeller reviews viewCount variants"
-    )
-    .sort(sortObj);
+  // Pagination logic
+  const page = parseInt(req.query.page) > 0 ? parseInt(req.query.page) : 1;
+  const limit = parseInt(req.query.limit) > 0 ? parseInt(req.query.limit) : 20;
+  const skip = (page - 1) * limit;
+
+  const [products, total] = await Promise.all([
+    Product.find(query)
+      .populate("brand", "name slug")
+      .select(
+        "name slug price originalPrice discountPercentage images specifications isFeatured isBestSeller reviews viewCount variants"
+      )
+      .sort(sortObj)
+      .skip(skip)
+      .limit(limit),
+    Product.countDocuments(query)
+  ]);
 
   res.json({
     success: true,
@@ -162,6 +194,14 @@ const getProductsByCategory = asyncHandler(async (req, res) => {
       image: category.image,
     },
     products,
+    pagination: {
+      page,
+      limit,
+      total,
+      pages: Math.ceil(total / limit),
+      hasNext: page * limit < total,
+      hasPrev: page > 1
+    }
   });
 });
 

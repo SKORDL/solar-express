@@ -21,15 +21,22 @@ const brandRoute = require("./routes/brandRoute");
 const categoryRoute = require("./routes/categoryRoute");
 
 const app = express();
+
 dotenv.config({ path: "./config/config.env" });
 
 // Middleware
-app.use(helmet()); // Security headers
+app.use(
+  helmet({
+    crossOriginResourcePolicy: { policy: "cross-origin" },
+  })
+); // Security headers with CORS support
+
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL,
+    origin: process.env.FRONTEND_URL || "http://localhost:3001", // Default to localhost for development
     credentials: true,
-    methods: ["GET", "POST"],
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
+    allowedHeaders: ["Content-Type", "Authorization", "Cookie"],
   })
 ); // Handle CORS
 
@@ -45,6 +52,11 @@ app.use("/api/user", authRouter);
 app.use("/api/products", productRoute);
 app.use("/api/brands", brandRoute);
 app.use("/api/category", categoryRoute);
+
+// Health check endpoint
+app.get("/api/health", (req, res) => {
+  res.status(200).json({ message: "Server is running!" });
+});
 
 dbConnect();
 

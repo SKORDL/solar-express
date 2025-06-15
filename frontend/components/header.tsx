@@ -1,8 +1,8 @@
 "use client"
 
 import { useState, useRef, useEffect } from "react"
-import { Search, ShoppingCart, User, Menu, X, ChevronDown, ChevronRight, MapPin } from "lucide-react"
-import { Sun, Battery, Zap, Home, Wrench, ShieldCheck } from "lucide-react"
+import { Search, ShoppingCart, User, Menu, X, ChevronDown, ChevronRight, MapPin } from 'lucide-react'
+import { Sun, Battery, Zap, Home, Wrench, ShieldCheck } from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import PriceTicker from "./price-ticker"
@@ -268,6 +268,15 @@ export default function Header() {
     setActiveBrand(null)
   }
 
+  // Handle mobile navigation click - close sidebar after navigation
+  const handleMobileNavClick = () => {
+    // Add a small delay to allow page navigation to start
+    setTimeout(() => {
+      setIsMobileMenuOpen(false)
+      setActiveMobileCategory(null)
+    }, 100)
+  }
+
   return (
     <header className="sticky top-0 z-50 bg-white">
       {/* Top bar with ticker */}
@@ -314,7 +323,9 @@ export default function Header() {
           </div>
 
           {/* Account and cart */}
+          
           <div className="flex items-center gap-1 md:gap-4">
+            <Link href="/auth" className="relative">
             <div className="hidden md:flex flex-col items-end cursor-pointer">
               <span className="text-xs text-white/80">Sign In</span>
               <div className="flex items-center">
@@ -322,6 +333,7 @@ export default function Header() {
                 <ChevronDown className="h-4 w-4 text-white/80 ml-1" />
               </div>
             </div>
+          </Link>
 
             <Link href="/cart" className="relative">
               <div className="bg-[#f26522] rounded-full w-10 h-10 flex items-center justify-center">
@@ -481,7 +493,9 @@ export default function Header() {
               <User className="h-5 w-5 text-white" />
             </div>
             <div>
-              <span className="text-sm font-medium">Sign In / Register</span>
+              <Link href="/auth" className="relative" onClick={handleMobileNavClick}>
+                <span className="text-sm font-medium">Sign In / Register</span>
+              </Link>
               <span className="text-xs text-white/80 block">Manage your account</span>
             </div>
           </div>
@@ -523,6 +537,7 @@ export default function Header() {
                   href={brand.url} 
                   key={index}
                   className="block p-3 rounded-lg bg-gray-50 hover:bg-gray-100"
+                  onClick={handleMobileNavClick}
                 >
                   <div className="flex items-center justify-between">
                     <span className="font-medium">{brand.name}</span>
@@ -545,6 +560,7 @@ export default function Header() {
               key={index} 
               href={item.href}
               className="flex items-center justify-between p-3 border-b border-gray-100"
+              onClick={handleMobileNavClick}
             >
               <span className="text-[#1a5ca4]">{item.name}</span>
               <ChevronRight className="h-4 w-4 text-gray-400" />
