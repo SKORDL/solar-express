@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import PriceTicker from "./price-ticker"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 
 // Updated category structure with Pakistani brands
 const categoryData = [
@@ -15,6 +16,7 @@ const categoryData = [
     icon: Sun,
     color: "bg-blue-100",
     iconColor: "text-[#1a5ca4]",
+    route: "/store?category=solar-panels",
     brands: [
       {
         name: "Jinko Solar", //{ name: "Sorotec", slug: "sorotec", logo: "growatt-logo" },
@@ -49,6 +51,7 @@ const categoryData = [
     icon: Zap,
     color: "bg-amber-100",
     iconColor: "text-amber-600",
+    route: "/store?category=inverters",
     brands: [
       {
         name: "Sorotec",
@@ -92,6 +95,7 @@ const categoryData = [
     icon: Battery,
     color: "bg-green-100",
     iconColor: "text-green-600",
+    route: "/store?category=batteries",
     brands: [
       {
         name: "Tesla",
@@ -125,6 +129,7 @@ const categoryData = [
     icon: Wrench,
     color: "bg-red-100",
     iconColor: "text-red-600",
+    route: "/store?category=tools",
     brands: [
       {
         name: "K2 Systems",
@@ -153,6 +158,7 @@ const categoryData = [
     icon: Home,
     color: "bg-purple-100",
     iconColor: "text-purple-600",
+    route: "/store?category=complete-systems",
     brands: [
       {
         name: "Solar Packages",
@@ -176,6 +182,7 @@ const categoryData = [
     icon: ShieldCheck,
     color: "bg-teal-100",
     iconColor: "text-teal-600",
+    route: "/store?category=accessories",
     brands: [
       {
         name: "Victron Energy",
@@ -208,7 +215,15 @@ const navItems = [
   { name: "Batteries", href: "/store?category=batteries" },
   { name: "Complete Systems", href: "/store?category=complete-systems" },
   { name: "Insurance", href: "/insurance" },
-  { name: "Installment Plans", href: "/installment" },
+  { name: "Installment Plans", href: "/installments" },
+  { name: "Blogs", href: "/blogs" },
+  { name: "Contact", href: "/contact" },
+]
+
+// Department navigation items (for mobile)
+const departmentNavItems = [
+  { name: "Insurance", href: "/insurance" },
+  { name: "Installment Plans", href: "/installments" },
   { name: "Blogs", href: "/blogs" },
   { name: "Contact", href: "/contact" },
 ]
@@ -220,8 +235,11 @@ export default function Header() {
   const [activeCategory, setActiveCategory] = useState(null)
   const [activeBrand, setActiveBrand] = useState(null)
   const [activeMobileCategory, setActiveMobileCategory] = useState(null)
+  const [expandedMobileCategory, setExpandedMobileCategory] = useState(null)
+  const [searchTerm, setSearchTerm] = useState("")
   const menuRef = useRef(null)
   const mobileSidebarRef = useRef(null)
+  const router = useRouter()
 
   // Close menu when clicking outside
   useEffect(() => {
@@ -259,6 +277,11 @@ export default function Header() {
     setActiveMobileCategory(activeMobileCategory === index ? null : index)
   }
 
+  // Toggle expanded mobile category
+  const toggleExpandedMobileCategory = (index) => {
+    setExpandedMobileCategory(expandedMobileCategory === index ? null : index)
+  }
+
   // Navigate to brand page
   const navigateToBrand = (url) => {
     // In a real implementation, you would use router.push(url) or similar
@@ -274,8 +297,20 @@ export default function Header() {
     setTimeout(() => {
       setIsMobileMenuOpen(false)
       setActiveMobileCategory(null)
+      setExpandedMobileCategory(null)
     }, 100)
   }
+
+const handleSearch = (e) => {
+  e.preventDefault();
+  if (searchTerm.trim()) {
+    router.push(`/store?search=${encodeURIComponent(searchTerm.trim())}`);
+    setIsMobileMenuOpen(false);
+    setActiveCategory(null);
+    setActiveBrand(null);
+    setSearchTerm(""); // Clear input after search
+  }
+};
 
   return (
     <header className="sticky top-0 z-50 bg-white">
@@ -307,19 +342,24 @@ export default function Header() {
 
           {/* Search bar */}
           <div className="flex-1 max-w-2xl mx-4">
-            <div className="relative">
-              <Input
-                type="text"
-                placeholder="Search here"
-                className="w-full py-2 pl-4 pr-10 rounded-full border-0 shadow-sm"
-              />
-              <Button
-                className="absolute right-0 top-0 h-full bg-[#f26522] hover:bg-[#e55511] rounded-l-none rounded-r-full"
-                size="icon"
-              >
-                <Search className="h-4 w-4" />
-              </Button>
-            </div>
+            <form onSubmit={handleSearch}>
+              <div className="relative">
+                <Input
+                  type="text"
+                  placeholder="Search here"
+                  className="w-full py-2 pl-4 pr-10 rounded-full border-0 shadow-sm"
+                  value={searchTerm}
+                  onChange={e => setSearchTerm(e.target.value)}
+                />
+                <Button
+                  type="submit"
+                  className="absolute right-0 top-0 h-full bg-[#f26522] hover:bg-[#e55511] rounded-l-none rounded-r-full"
+                  size="icon"
+                >
+                  <Search className="h-4 w-4" />
+                </Button>
+              </div>
+            </form>
           </div>
 
           {/* Account and cart */}
@@ -461,13 +501,13 @@ export default function Header() {
       </div>
 
       {/* Mobile menu - animated sidebar */}
-        <div 
-          ref={mobileSidebarRef}
-          className={`md:hidden fixed top-0 left-0 h-full bg-white shadow-xl z-50 transition-all duration-300 ease-in-out overflow-y-auto w-4/5 ${
-            isMobileMenuOpen ? "transform translate-x-0" : "transform -translate-x-full"
-          }`}
-          style={{ maxWidth: "320px" }}
-        >
+      <div 
+        ref={mobileSidebarRef}
+        className={`md:hidden fixed top-0 left-0 h-full bg-white shadow-xl z-50 transition-all duration-300 ease-in-out overflow-y-auto w-4/5 ${
+          isMobileMenuOpen ? "transform translate-x-0" : "transform -translate-x-full"
+        }`}
+        style={{ maxWidth: "320px" }}
+      >
         {/* Mobile header */}
         <div className="flex items-center justify-between p-4 bg-[#1a5ca4] text-white">
           <div className="flex items-center gap-2">
@@ -506,56 +546,74 @@ export default function Header() {
           <h3 className="text-lg font-medium px-2 mb-2 text-[#1a5ca4]">Departments</h3>
           <div className="flex overflow-x-auto pb-2 hide-scrollbar">
             {categoryData.map((category, index) => (
-              <div 
-                key={index} 
+              <Link
+                key={index}
+                href={category.route}
                 className="flex-shrink-0 mr-2 w-24"
-                onClick={() => toggleMobileCategory(index)}
+                onClick={handleMobileNavClick}
               >
-                <div className={`rounded-lg bg-white border p-2 flex flex-col items-center justify-center h-24 shadow-sm ${
-                  activeMobileCategory === index ? "border-[#f26522]" : "border-gray-200"
-                }`}>
+                <div className="rounded-lg bg-white border border-gray-200 p-2 flex flex-col items-center justify-center h-24 shadow-sm hover:border-[#f26522] hover:shadow-md transition-all">
                   <div className="h-12 w-12 rounded-full bg-[#1a5ca4]/10 flex items-center justify-center mb-1">
                     <category.icon className={`h-8 w-8 ${category.iconColor}`}/>
                   </div>
                   <span className="text-xs text-center font-medium">{category.name}</span>
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
         </div>
 
-        {/* Active category brands */}
-        {activeMobileCategory !== null && (
-          <div className="p-4 border-b border-gray-200">
-            <h3 className="font-medium mb-2 text-[#1a5ca4] flex items-center">
-              <ChevronRight className="h-4 w-4 mr-1" />
-              {categoryData[activeMobileCategory].name}
-            </h3>
-            <div className="space-y-2">
-              {categoryData[activeMobileCategory].brands.map((brand, index) => (
-                <Link 
-                  href={brand.url} 
-                  key={index}
-                  className="block p-3 rounded-lg bg-gray-50 hover:bg-gray-100"
-                  onClick={handleMobileNavClick}
-                >
-                  <div className="flex items-center justify-between">
-                    <span className="font-medium">{brand.name}</span>
-                    <ChevronRight className="h-4 w-4 text-[#f26522]" />
-                  </div>
-                  <div className="text-xs text-gray-500 mt-1">
-                    {brand.subcategories.slice(0, 2).join(", ")}
-                    {brand.subcategories.length > 2 ? " & more" : ""}
-                  </div>
-                </Link>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Main navigation links for mobile */}
+        {/* Category navigation (replaced navItems) */}
         <nav className="p-4">
-          {navItems.map((item, index) => (
+          <h3 className="text-lg font-medium mb-3 text-[#1a5ca4]">Brands</h3>
+          {categoryData.map((category, index) => (
+            <div key={index} className="mb-2">
+              <div 
+                className="flex items-center justify-between p-3 border-b border-gray-100 cursor-pointer"
+                onClick={() => toggleExpandedMobileCategory(index)}
+              >
+                <div className="flex items-center gap-3">
+                  <div className="h-8 w-8 rounded-full bg-[#1a5ca4]/10 flex items-center justify-center">
+                    <category.icon className={`h-5 w-5 ${category.iconColor}`}/>
+                  </div>
+                  <span className="text-[#1a5ca4] font-medium">{category.name}</span>
+                </div>
+                <ChevronDown className={`h-4 w-4 text-gray-400 transition-transform ${expandedMobileCategory === index ? 'rotate-180' : ''}`} />
+              </div>
+              
+              {/* Expanded category content */}
+              {expandedMobileCategory === index && (
+                <div className="pl-11 py-2 space-y-2">
+                  {/* Category main link */}
+                  <Link 
+                    href={category.route}
+                    className="block p-2 text-sm text-[#f26522] font-medium hover:bg-gray-50 rounded"
+                    onClick={handleMobileNavClick}
+                  >
+                    View All {category.name}
+                  </Link>
+                  
+                  {/* Brand links */}
+                  {category.brands.map((brand, brandIndex) => (
+                    <Link 
+                      key={brandIndex}
+                      href={brand.url}
+                      className="block p-2 text-sm text-gray-600 hover:bg-gray-50 hover:text-[#1a5ca4] rounded"
+                      onClick={handleMobileNavClick}
+                    >
+                      {brand.name}
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </div>
+          ))}
+        </nav>
+
+        {/* Department navigation links (Insurance, Installments, etc.) */}
+        <div className="p-4 border-t border-gray-200">
+          <h3 className="text-lg font-medium mb-3 text-[#1a5ca4]">Services</h3>
+          {departmentNavItems.map((item, index) => (
             <Link 
               key={index} 
               href={item.href}
@@ -566,7 +624,7 @@ export default function Header() {
               <ChevronRight className="h-4 w-4 text-gray-400" />
             </Link>
           ))}
-        </nav>
+        </div>
       </div>
 
       {/* Overlay when mobile menu is open */}

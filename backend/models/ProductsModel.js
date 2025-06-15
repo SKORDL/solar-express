@@ -237,7 +237,6 @@ const productSchema = new mongoose.Schema(
 );
 
 // Middleware
-// Add this pre-save hook to update related Brand & Category
 productSchema.pre("save", async function (next) {
   // Update slug if name changes
   if (!this.slug || this.isModified("name")) {
@@ -272,14 +271,50 @@ productSchema.post("remove", async function (doc) {
   ]);
 });
 
-// Indexes
-productSchema.index({
-  name: "text",
-  description: "text",
-  keyFeatures: "text",
-  tags: "text",
-});
+// Enhanced Text Indexes for better search
+productSchema.index(
+  {
+    name: "text",
+    slug: "text",
+    description: "text",
+    "specifications.items.value": "text",
+    tags: "text",
+    keyFeatures: "text",
+  },
+  {
+    weights: {
+      name: 10,
+      "specifications.items.value": 5,
+      tags: 3,
+      description: 2,
+      keyFeatures: 2,
+    },
+    name: "product_search_index",
+  }
+);
+
+// Regular indexes for filtering
 productSchema.index({ isFeatured: 1, isBestSeller: 1, isNewArrival: 1 });
 productSchema.index({ brand: 1, category: 1, subCategory: 1 });
+productSchema.index({ price: 1 });
+productSchema.index({ "reviews.rating": 1 });
+
+// Virtual for populated brand name (helps with search)
+productSchema.virtual("brandName", {
+  ref: "Brand",
+  localField: "brand",
+  foreignField: "_id",
+  justOne: true,
+  options: { select: "name" },
+});
+
+// Virtual for populated category name
+productSchema.virtual("categoryName", {
+  ref: "Category",
+  localField: "category",
+  foreignField: "_id",
+  justOne: true,
+  options: { select: "name" },
+});
 
 module.exports = mongoose.model("Product", productSchema);

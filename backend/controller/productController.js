@@ -32,7 +32,8 @@ const getAllProducts = asyncHandler(async (req, res) => {
   // Universal filters
   if (req.query.brand) query.brand = req.query.brand;
   if (req.query.isFeatured) query.isFeatured = req.query.isFeatured === "true";
-  if (req.query.isBestSeller) query.isBestSeller = req.query.isBestSeller === "true";
+  if (req.query.isBestSeller)
+    query.isBestSeller = req.query.isBestSeller === "true";
   if (req.query.price_min || req.query.price_max) {
     query.price = {};
     if (req.query.price_min) query.price.$gte = Number(req.query.price_min);
@@ -40,11 +41,29 @@ const getAllProducts = asyncHandler(async (req, res) => {
   }
   if (req.query.rating_min || req.query.rating_max) {
     query["reviews.rating"] = {};
-    if (req.query.rating_min) query["reviews.rating"].$gte = Number(req.query.rating_min);
-    if (req.query.rating_max) query["reviews.rating"].$lte = Number(req.query.rating_max);
+    if (req.query.rating_min)
+      query["reviews.rating"].$gte = Number(req.query.rating_min);
+    if (req.query.rating_max)
+      query["reviews.rating"].$lte = Number(req.query.rating_max);
+  }
+
+  // SEARCH FUNCTIONALITY - SIMPLIFIED AND FIXED
+  if (req.query.search && req.query.search.trim() !== "") {
+    const searchRegex = new RegExp(
+      req.query.search.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&"),
+      "i"
+    );
+    query.$or = [
+      { name: searchRegex },
+      { slug: searchRegex },
+      { "specifications.items.value": searchRegex },
+      { description: searchRegex },
+      { tags: searchRegex },
+    ];
   }
 
   // Dynamic specification filters
+  const specFilters = [];
   Object.entries(req.query).forEach(([key, value]) => {
     if (
       ![
@@ -58,29 +77,53 @@ const getAllProducts = asyncHandler(async (req, res) => {
         "sort",
         "category",
         "page",
-        "limit"
+        "limit",
+        "search",
       ].includes(key)
     ) {
-      // For range: field_min/field_max, for select: field=value
       if (key.endsWith("_min")) {
         const field = key.replace("_min", "");
-        query["specifications.items"] = { $elemMatch: { name: field, value: { $gte: Number(value) } } };
+        specFilters.push({
+          "specifications.items": {
+            $elemMatch: { name: field, value: { $gte: Number(value) } },
+          },
+        });
       } else if (key.endsWith("_max")) {
         const field = key.replace("_max", "");
-        query["specifications.items"] = { $elemMatch: { name: field, value: { $lte: Number(value) } } };
+        specFilters.push({
+          "specifications.items": {
+            $elemMatch: { name: field, value: { $lte: Number(value) } },
+          },
+        });
       } else {
-        query["specifications.items"] = { $elemMatch: { name: key, value: value } };
+        specFilters.push({
+          "specifications.items": { $elemMatch: { name: key, value: value } },
+        });
       }
     }
   });
 
-  // Category filter (optional)
-  if (req.query.category) query.category = req.query.category;
+  if (specFilters.length > 0) {
+    query.$and = (query.$and || []).concat(specFilters);
+  }
 
-  // Pagination logic
+  // Category filter
+  if (req.query.category) {
+    const categoryDoc = await Category.findOne({ slug: req.query.category });
+    if (categoryDoc) {
+      query.category = categoryDoc._id;
+    } else {
+      query.category = req.query.category;
+    }
+  }
+
+  // Pagination
   const page = parseInt(req.query.page) > 0 ? parseInt(req.query.page) : 1;
   const limit = parseInt(req.query.limit) > 0 ? parseInt(req.query.limit) : 20;
   const skip = (page - 1) * limit;
+
+  // Disable caching for search results
+  res.setHeader("Cache-Control", "no-store");
 
   const [products, total] = await Promise.all([
     Product.find(query)
@@ -92,7 +135,7 @@ const getAllProducts = asyncHandler(async (req, res) => {
       .sort(sortObj)
       .skip(skip)
       .limit(limit),
-    Product.countDocuments(query)
+    Product.countDocuments(query),
   ]);
 
   res.json({
@@ -104,8 +147,8 @@ const getAllProducts = asyncHandler(async (req, res) => {
       total,
       pages: Math.ceil(total / limit),
       hasNext: page * limit < total,
-      hasPrev: page > 1
-    }
+      hasPrev: page > 1,
+    },
   });
 });
 
@@ -129,7 +172,8 @@ const getProductsByCategory = asyncHandler(async (req, res) => {
   // Universal filters
   if (req.query.brand) query.brand = req.query.brand;
   if (req.query.isFeatured) query.isFeatured = req.query.isFeatured === "true";
-  if (req.query.isBestSeller) query.isBestSeller = req.query.isBestSeller === "true";
+  if (req.query.isBestSeller)
+    query.isBestSeller = req.query.isBestSeller === "true";
   if (req.query.price_min || req.query.price_max) {
     query.price = {};
     if (req.query.price_min) query.price.$gte = Number(req.query.price_min);
@@ -137,11 +181,40 @@ const getProductsByCategory = asyncHandler(async (req, res) => {
   }
   if (req.query.rating_min || req.query.rating_max) {
     query["reviews.rating"] = {};
-    if (req.query.rating_min) query["reviews.rating"].$gte = Number(req.query.rating_min);
-    if (req.query.rating_max) query["reviews.rating"].$lte = Number(req.query.rating_max);
+    if (req.query.rating_min)
+      query["reviews.rating"].$gte = Number(req.query.rating_min);
+    if (req.query.rating_max)
+      query["reviews.rating"].$lte = Number(req.query.rating_max);
+  }
+
+  if (req.query.search) {
+    const searchRegex = new RegExp(escapeRegex(req.query.search), "i");
+    const searchConditions = [
+      { name: searchRegex },
+      { slug: searchRegex },
+      { "specifications.items.value": searchRegex },
+      { "brand.name": searchRegex }, // This requires proper population
+      { "category.name": searchRegex }, // This requires proper population
+      { description: searchRegex },
+      { tags: searchRegex },
+    ];
+
+    // If there are other filters, combine with $and, otherwise use $or directly
+    if (Object.keys(query).length > 0) {
+      query.$and = query.$and || [];
+      query.$and.push({ $or: searchConditions });
+    } else {
+      query.$or = searchConditions;
+    }
+  }
+
+  // Helper function to escape regex special characters
+  function escapeRegex(text) {
+    return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
   }
 
   // Dynamic specification filters
+  const specFilters = [];
   Object.entries(req.query).forEach(([key, value]) => {
     if (
       ![
@@ -154,36 +227,61 @@ const getProductsByCategory = asyncHandler(async (req, res) => {
         "rating_max",
         "sort",
         "page",
-        "limit"
+        "limit",
       ].includes(key)
     ) {
       if (key.endsWith("_min")) {
         const field = key.replace("_min", "");
-        query["specifications.items"] = { $elemMatch: { name: field, value: { $gte: Number(value) } } };
+        specFilters.push({
+          "specifications.items": {
+            $elemMatch: { name: field, value: { $gte: Number(value) } },
+          },
+        });
       } else if (key.endsWith("_max")) {
         const field = key.replace("_max", "");
-        query["specifications.items"] = { $elemMatch: { name: field, value: { $lte: Number(value) } } };
+        specFilters.push({
+          "specifications.items": {
+            $elemMatch: { name: field, value: { $lte: Number(value) } },
+          },
+        });
       } else {
-        query["specifications.items"] = { $elemMatch: { name: key, value: value } };
+        specFilters.push({
+          "specifications.items": { $elemMatch: { name: key, value: value } },
+        });
       }
     }
   });
+  // Combine all $and conditions (search and specFilters)
+  if (specFilters.length > 0) {
+    if (!query.$and) query.$and = [];
+    query.$and.push(...specFilters);
+  }
 
   // Pagination logic
   const page = parseInt(req.query.page) > 0 ? parseInt(req.query.page) : 1;
   const limit = parseInt(req.query.limit) > 0 ? parseInt(req.query.limit) : 20;
   const skip = (page - 1) * limit;
 
+  let projection = {};
+  let sortQuery = sortObj;
+
+  if (query.$text) {
+    projection = { score: { $meta: "textScore" } };
+    sortQuery = { score: { $meta: "textScore" } };
+  }
+
   const [products, total] = await Promise.all([
-    Product.find(query)
-      .populate("brand", "name slug")
+    Product.find(query, projection)
+      .sort(sortQuery)
+      .populate("brand", "name slug") // Already correct
+      .populate("category", "name slug") // Already correct
       .select(
         "name slug price originalPrice discountPercentage images specifications isFeatured isBestSeller reviews viewCount variants"
       )
       .sort(sortObj)
       .skip(skip)
       .limit(limit),
-    Product.countDocuments(query)
+    Product.countDocuments(query),
   ]);
 
   res.json({
@@ -200,8 +298,8 @@ const getProductsByCategory = asyncHandler(async (req, res) => {
       total,
       pages: Math.ceil(total / limit),
       hasNext: page * limit < total,
-      hasPrev: page > 1
-    }
+      hasPrev: page > 1,
+    },
   });
 });
 
