@@ -2,6 +2,7 @@ const express = require("express");
 const asyncHandler = require("express-async-handler");
 const Product = require("../models/ProductsModel");
 const Category = require("../models/CategoryModel");
+const categoryFilters = require("../utils/categoryFilters");
 
 // Helper to get sort object from query
 function getSortObject(sort) {
@@ -26,7 +27,55 @@ const getAllProducts = asyncHandler(async (req, res) => {
   const sort = req.query.sort || "newest";
   const sortObj = getSortObject(sort);
 
-  const products = await Product.find({})
+  let query = {};
+
+  // Universal filters
+  if (req.query.brand) query.brand = req.query.brand;
+  if (req.query.isFeatured) query.isFeatured = req.query.isFeatured === "true";
+  if (req.query.isBestSeller) query.isBestSeller = req.query.isBestSeller === "true";
+  if (req.query.price_min || req.query.price_max) {
+    query.price = {};
+    if (req.query.price_min) query.price.$gte = Number(req.query.price_min);
+    if (req.query.price_max) query.price.$lte = Number(req.query.price_max);
+  }
+  if (req.query.rating_min || req.query.rating_max) {
+    query["reviews.rating"] = {};
+    if (req.query.rating_min) query["reviews.rating"].$gte = Number(req.query.rating_min);
+    if (req.query.rating_max) query["reviews.rating"].$lte = Number(req.query.rating_max);
+  }
+
+  // Dynamic specification filters
+  Object.entries(req.query).forEach(([key, value]) => {
+    if (
+      ![
+        "brand",
+        "isFeatured",
+        "isBestSeller",
+        "price_min",
+        "price_max",
+        "rating_min",
+        "rating_max",
+        "sort",
+        "category"
+      ].includes(key)
+    ) {
+      // For range: field_min/field_max, for select: field=value
+      if (key.endsWith("_min")) {
+        const field = key.replace("_min", "");
+        query["specifications.items"] = { $elemMatch: { name: field, value: { $gte: Number(value) } } };
+      } else if (key.endsWith("_max")) {
+        const field = key.replace("_max", "");
+        query["specifications.items"] = { $elemMatch: { name: field, value: { $lte: Number(value) } } };
+      } else {
+        query["specifications.items"] = { $elemMatch: { name: key, value: value } };
+      }
+    }
+  });
+
+  // Category filter (optional)
+  if (req.query.category) query.category = req.query.category;
+
+  const products = await Product.find(query)
     .populate("brand", "name slug")
     .populate("category", "name slug")
     .select(
@@ -55,7 +104,50 @@ const getProductsByCategory = asyncHandler(async (req, res) => {
     });
   }
 
-  const products = await Product.find({ category: category._id })
+  let query = { category: category._id };
+
+  // Universal filters
+  if (req.query.brand) query.brand = req.query.brand;
+  if (req.query.isFeatured) query.isFeatured = req.query.isFeatured === "true";
+  if (req.query.isBestSeller) query.isBestSeller = req.query.isBestSeller === "true";
+  if (req.query.price_min || req.query.price_max) {
+    query.price = {};
+    if (req.query.price_min) query.price.$gte = Number(req.query.price_min);
+    if (req.query.price_max) query.price.$lte = Number(req.query.price_max);
+  }
+  if (req.query.rating_min || req.query.rating_max) {
+    query["reviews.rating"] = {};
+    if (req.query.rating_min) query["reviews.rating"].$gte = Number(req.query.rating_min);
+    if (req.query.rating_max) query["reviews.rating"].$lte = Number(req.query.rating_max);
+  }
+
+  // Dynamic specification filters
+  Object.entries(req.query).forEach(([key, value]) => {
+    if (
+      ![
+        "brand",
+        "isFeatured",
+        "isBestSeller",
+        "price_min",
+        "price_max",
+        "rating_min",
+        "rating_max",
+        "sort"
+      ].includes(key)
+    ) {
+      if (key.endsWith("_min")) {
+        const field = key.replace("_min", "");
+        query["specifications.items"] = { $elemMatch: { name: field, value: { $gte: Number(value) } } };
+      } else if (key.endsWith("_max")) {
+        const field = key.replace("_max", "");
+        query["specifications.items"] = { $elemMatch: { name: field, value: { $lte: Number(value) } } };
+      } else {
+        query["specifications.items"] = { $elemMatch: { name: key, value: value } };
+      }
+    }
+  });
+
+  const products = await Product.find(query)
     .populate("brand", "name slug")
     .select(
       "name slug price originalPrice discountPercentage images specifications isFeatured isBestSeller reviews viewCount variants"
@@ -180,6 +272,13 @@ const getProductBySlug = asyncHandler(async (req, res) => {
   res.status(200).json({ success: true, product });
 });
 
+// Get available filters for a specific category
+const getCategoryFilters = asyncHandler(async (req, res) => {
+  const { slug } = req.params;
+  const filters = categoryFilters[slug] || categoryFilters["default"];
+  res.json({ success: true, filters });
+});
+
 // Debug endpoint
 const debog = asyncHandler(async (req, res) => {
   try {
@@ -201,5 +300,6 @@ module.exports = {
   getAllProducts,
   getProductBySlug,
   getProductsByCategory,
+  getCategoryFilters,
   debog,
 };

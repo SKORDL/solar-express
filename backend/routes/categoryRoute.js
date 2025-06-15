@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const { authMiddleware, isAdmin } = require("../middlewares/authMiddleware");
 
 const {
   createCategory,
@@ -18,8 +19,8 @@ router.get("/:slug/products", getCategoryProducts);
 router.get("/:slug", getCategoryBySlug);
 
 // Modification routes
-router.post("/new/create", createCategory);
-router.put("/update/:id", updateCategory);
-router.delete("/del/:id", deleteCategory);
+router.post("/new/create", authMiddleware, isAdmin, createCategory);
+router.put("/update/:id", authMiddleware, isAdmin, updateCategory);
+router.delete("/del/:id", authMiddleware, isAdmin, deleteCategory);
 
 module.exports = router;

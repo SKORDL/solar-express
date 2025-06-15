@@ -12,6 +12,7 @@ const {
   updateProduct,
   deleteProduct,
   debog,
+  getCategoryFilters,
 } = require("../controller/productController");
 
 // Create product route with file upload
@@ -23,6 +24,7 @@ router.put("/update/:id", authMiddleware, isAdmin, updateProduct); // Update pro
 router.delete("/delete/:id", authMiddleware, isAdmin, deleteProduct); // Update product by ID
 router.get("/category/:slug", getProductsByCategory);
 router.get("/:slug", getProductBySlug); // GET product by ID
+router.get("/filters/:slug", getCategoryFilters);
 
 module.exports = router;
 

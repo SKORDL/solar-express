@@ -1,4 +1,5 @@
 const express = require("express");
+const { authMiddleware, isAdmin } = require("../middlewares/authMiddleware");
 
 const {
   getBrandBySlug,
@@ -10,7 +11,7 @@ const {
 
 const router = express.Router();
 
-router.post("/new/create", createBrand);
+router.post("/new/create", authMiddleware, isAdmin, createBrand);
 router.get("/", getAllBrands);
 router.get("/featured", getFeaturedBrands);
 router.get("/:slug/products", getBrandProducts);
