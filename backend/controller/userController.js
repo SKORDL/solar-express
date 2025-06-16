@@ -20,7 +20,7 @@ const createUser = async (req, res, next) => {
     } else {
       return res.status(409).json({
         success: false,
-        msg: "User is already registered",
+        message: "User is already registered",
       });
     }
   } catch (err) {
@@ -32,39 +32,43 @@ const createUser = async (req, res, next) => {
 const loginUser = async (req, res) => {
   const { email, password } = req.body;
 
-  //finding particular user
   const findUser = await User.findOne({ email });
-  if (findUser && (await findUser.isPasswordMatched(password))) {
-    const refreshToken = await generateRefreshToken(findUser._id); // Generate a refresh token
-    const updateUser = await User.findByIdAndUpdate(
-      findUser._id,
-      { refreshToken: refreshToken }, // Update the user's refresh token
-      { new: true }
-    );
-    res.cookie("refreshToken", refreshToken, {
-      httpOnly: true,
-      secure: true, // Set to true if using HTTPS
-      // sameSite: "strict", // Adjust based on your requirements
-      maxAge: 10 * 24 * 60 * 60 * 1000, // 30 days in milliseconds
-    });
-
-    return res.status(200).json({
-      success: true,
-      msg: "Login successful",
-      _id: findUser._id,
-      name: findUser.name,
-      email: findUser.email,
-      mobile: findUser.mobile,
-      token: generateToken(findUser._id), // generateToken is imported from jwtToken.js
-      createdAt: findUser.createdAt,
-      updatedAt: findUser.updatedAt,
-    });
-  } else {
+  if (!findUser) {
     return res.status(401).json({
       success: false,
-      msg: "Invalid email or password",
+      message: "User not found",
     });
   }
+  if (!(await findUser.isPasswordMatched(password))) {
+    return res.status(401).json({
+      success: false,
+      message: "Incorrect password",
+    });
+  }
+  const refreshToken = await generateRefreshToken(findUser._id); // Generate a refresh token
+  const updateUser = await User.findByIdAndUpdate(
+    findUser._id,
+    { refreshToken: refreshToken }, // Update the user's refresh token
+    { new: true }
+  );
+  res.cookie("refreshToken", refreshToken, {
+    httpOnly: true,
+    secure: true, // Set to true if using HTTPS
+    // sameSite: "strict", // Adjust based on your requirements
+    maxAge: 10 * 24 * 60 * 60 * 1000, // 30 days in milliseconds
+  });
+
+  return res.status(200).json({
+    success: true,
+    message: "Login successful",
+    _id: findUser._id,
+    name: findUser.name,
+    email: findUser.email,
+    mobile: findUser.mobile,
+    token: generateToken(findUser._id), // generateToken is imported from jwtToken.js
+    createdAt: findUser.createdAt,
+    updatedAt: findUser.updatedAt,
+  });
 };
 
 const handleRefreshToken = async (req, res) => {
@@ -72,7 +76,7 @@ const handleRefreshToken = async (req, res) => {
   if (!cookie?.refreshToken) {
     return res.status(401).json({
       success: false,
-      msg: "No refresh token provided",
+      message: "No refresh token provided",
     });
   }
 
@@ -83,7 +87,7 @@ const handleRefreshToken = async (req, res) => {
     if (!user) {
       return res.status(403).json({
         success: false,
-        msg: "Refresh token not found, please login again",
+        message: "Refresh token not found, please login again",
       });
     }
 
@@ -92,7 +96,7 @@ const handleRefreshToken = async (req, res) => {
       if (err) {
         return res.status(403).json({
           success: false,
-          msg: "Invalid refresh token",
+          message: "Invalid refresh token",
         });
       }
 
@@ -100,7 +104,7 @@ const handleRefreshToken = async (req, res) => {
       if (user._id.toString() !== decoded.id) {
         return res.status(403).json({
           success: false,
-          msg: "User ID mismatch in refresh token",
+          message: "User ID mismatch in refresh token",
         });
       }
 
@@ -113,7 +117,7 @@ const handleRefreshToken = async (req, res) => {
   } catch (error) {
     return res.status(500).json({
       success: false,
-      msg: "Internal server error",
+      message: "Internal server error",
     });
   }
 };
@@ -123,7 +127,7 @@ const logoutUser = async (req, res) => {
   if (!refreshToken) {
     return res.status(400).json({
       success: false,
-      msg: "No refresh token provided",
+      message: "No refresh token provided",
     });
   }
 
@@ -140,12 +144,12 @@ const logoutUser = async (req, res) => {
 
     return res.status(200).json({
       success: true,
-      msg: "Logout successful",
+      message: "Logout successful",
     });
   } catch (err) {
     return res.status(500).json({
       success: false,
-      msg: "Error logging out",
+      message: "Error logging out",
     });
   }
 };
@@ -176,7 +180,7 @@ const getSingleUser = async (req, res) => {
     } else {
       return res.status(404).json({
         success: false,
-        msg: "User not found",
+        message: "User not found",
       });
     }
   } catch (err) {
@@ -192,12 +196,12 @@ const deleteUser = async (req, res) => {
     if (user) {
       return res.status(200).json({
         success: true,
-        msg: "User deleted successfully",
+        message: "User deleted successfully",
       });
     } else {
       return res.status(404).json({
         success: false,
-        msg: "User not found",
+        message: "User not found",
       });
     }
   } catch (err) {
@@ -225,7 +229,7 @@ const updateUser = async (req, res) => {
     } else {
       return res.status(404).json({
         success: false,
-        msg: "User not found",
+        message: "User not found",
       });
     }
   } catch (err) {
@@ -244,12 +248,12 @@ const blockUser = async (req, res) => {
     if (user) {
       return res.status(200).json({
         success: true,
-        msg: "User blocked successfully",
+        message: "User blocked successfully",
       });
     } else {
       return res.status(404).json({
         success: false,
-        msg: "User not found",
+        message: "User not found",
       });
     }
   } catch (err) {
@@ -267,17 +271,32 @@ const unBlockUser = async (req, res) => {
     if (user) {
       return res.status(200).json({
         success: true,
-        msg: "User unblocked successfully",
+        message: "User unblocked successfully",
       });
     } else {
       return res.status(404).json({
         success: false,
-        msg: "User not found",
+        message: "User not found",
       });
     }
   } catch (err) {
     // Pass error to the global error handler
     next(err);
+  }
+};
+
+const getCurrentUser = async (req, res) => {
+  try {
+    // req.user is set by authMiddleware
+    const user = await User.findById(req.user?._id).select("-password");
+    if (!user) {
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
+    }
+    res.json({ success: true, user });
+  } catch (err) {
+    res.status(401).json({ success: false, message: "Unauthorized" });
   }
 };
 
@@ -292,4 +311,5 @@ module.exports = {
   blockUser,
   unBlockUser,
   handleRefreshToken,
+  getCurrentUser,
 };

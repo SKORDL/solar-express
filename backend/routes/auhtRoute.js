@@ -14,9 +14,12 @@ const {
   unBlockUser,
   logoutUser,
   handleRefreshToken,
+  getCurrentUser,
 } = require("../controller/userController");
 
 router.post("/register", createUser);
+
+router.get("/me", authMiddleware, getCurrentUser);
 
 router.post("/login", loginUser);
 router.post("/logout", authMiddleware, logoutUser);

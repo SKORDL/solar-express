@@ -1,17 +1,36 @@
 "use client"
 
+import type React from "react"
+
 import { useState } from "react"
 import { Eye, EyeOff, Mail, Lock, User, Phone, MapPin } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Checkbox } from "@/components/ui/checkbox"
 import Link from "next/link"
+import { useSearchParams, useRouter } from "next/navigation"
+import { useAuth } from "@/context/AuthContext"
+import toast from "react-hot-toast"
+
+
+interface FormData {
+  firstName: string
+  lastName: string
+  email: string
+  phone: string
+  password: string
+  confirmPassword: string
+  agreeToTerms: boolean
+  subscribeNewsletter: boolean
+}
+
+type FormField = keyof FormData
 
 export default function AuthPage() {
   const [isLogin, setIsLogin] = useState(true)
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormData>({
     firstName: "",
     lastName: "",
     email: "",
@@ -21,18 +40,84 @@ export default function AuthPage() {
     agreeToTerms: false,
     subscribeNewsletter: false,
   })
+  const [loading, setLoading] = useState(false)
+  const searchParams = useSearchParams()
+  const router = useRouter()
+  const redirect = searchParams.get("redirect") || "/"
+  const { setUser } = useAuth()
 
-  const handleInputChange = (field, value) => {
+  const handleInputChange = (field: FormField, value: string | boolean) => {
     setFormData((prev) => ({
       ...prev,
       [field]: value,
     }))
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    // Handle form submission
-    console.log("Form submitted:", formData)
+    setLoading(true)
+
+    try {
+      const endpoint = isLogin ? "/api/user/login" : "/api/user/register"
+      const payload = isLogin
+        ? {
+            email: formData.email,
+            password: formData.password,
+          }
+        : {
+            name: `${formData.firstName} ${formData.lastName}`,
+            email: formData.email,
+            password: formData.password,
+            mobile: formData.phone,
+          }
+
+      if (!isLogin && formData.password !== formData.confirmPassword) {
+        toast.error("Passwords do not match.")
+        setLoading(false)
+        return
+      }
+
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}${endpoint}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify(payload),
+      })
+      const data = await res.json()
+      if (!res.ok) {
+        let msg = "Something went wrong"
+        if (data.message?.toLowerCase().includes("password")) {
+          msg = "Incorrect password. Please try again."
+        } else if (data.message?.toLowerCase().includes("user not found")) {
+          msg = "No account found with this email."
+        } else if (data.message?.toLowerCase().includes("already exists")) {
+          msg = "An account with this email already exists."
+        } else if (data.message) {
+          msg = data.message
+        }
+        toast.error(msg)
+        setLoading(false)
+        return
+      }
+      // For login, backend returns user info as top-level fields
+      if (isLogin) {
+        setUser({
+          _id: data._id,
+          name: data.name,
+          email: data.email,
+          mobile: data.mobile,
+          createdAt: data.createdAt,
+          updatedAt: data.updatedAt,
+        })
+      } else {
+        setUser(data.data)
+      }
+      router.push(redirect)
+    } catch (err: any) {
+      toast.error(err.message || "Something went wrong")
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -61,7 +146,7 @@ export default function AuthPage() {
 
       {/* Main content */}
       <div className="relative z-10 flex items-center justify-center min-h-screen p-4">
-        <div className="w-full max-w-md">
+        <div className="w-full max-w-[420px] mx-auto">
           {/* Auth card with subtle shadow and border */}
           <div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
             {/* Header tabs */}
@@ -225,7 +310,7 @@ export default function AuthPage() {
                       <Checkbox
                         id="terms"
                         checked={formData.agreeToTerms}
-                        onCheckedChange={(checked) => handleInputChange("agreeToTerms", checked)}
+                        onCheckedChange={(checked) => handleInputChange("agreeToTerms", checked as boolean)}
                         className="border-gray-300 data-[state=checked]:bg-[#1a5ca4] data-[state=checked]:border-[#1a5ca4] mt-0.5"
                         required={!isLogin}
                       />
@@ -244,7 +329,7 @@ export default function AuthPage() {
                       <Checkbox
                         id="newsletter"
                         checked={formData.subscribeNewsletter}
-                        onCheckedChange={(checked) => handleInputChange("subscribeNewsletter", checked)}
+                        onCheckedChange={(checked) => handleInputChange("subscribeNewsletter", checked as boolean)}
                         className="border-gray-300 data-[state=checked]:bg-[#1a5ca4] data-[state=checked]:border-[#1a5ca4]"
                       />
                       <label htmlFor="newsletter" className="text-sm text-gray-600">
@@ -258,8 +343,9 @@ export default function AuthPage() {
                 <Button
                   type="submit"
                   className="w-full h-12 bg-[#f26522] hover:bg-[#e55511] text-white font-medium text-lg rounded-lg transition-colors shadow-md hover:shadow-lg"
+                  disabled={loading}
                 >
-                  {isLogin ? "Sign In" : "Create Account"}
+                  {loading ? (isLogin ? "Signing In..." : "Creating Account...") : isLogin ? "Sign In" : "Create Account"}
                 </Button>
 
                 {/* Divider */}
@@ -347,7 +433,6 @@ export default function AuthPage() {
 
           {/* Solar Express branding */}
           <div className="mt-6 text-center">
-            
             <p className="text-gray-500 text-xs mt-2">Your trusted solar energy partner</p>
           </div>
         </div>
