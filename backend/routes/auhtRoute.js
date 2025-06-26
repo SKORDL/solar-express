@@ -15,6 +15,10 @@ const {
   logoutUser,
   handleRefreshToken,
   getCurrentUser,
+  addToCart,
+  getCart,
+  updateCartItem,
+  removeFromCart,
 } = require("../controller/userController");
 
 router.post("/register", createUser);
@@ -25,6 +29,11 @@ router.post("/login", loginUser);
 router.post("/logout", authMiddleware, logoutUser);
 
 router.get("/refresh-token", handleRefreshToken);
+
+router.get("/cart", authMiddleware, getCart);
+router.post("/cart/add", authMiddleware, addToCart);
+router.put("/cart/update", authMiddleware, updateCartItem);
+router.delete("/cart/remove", authMiddleware, removeFromCart);
 
 router.get("/all", authMiddleware, isAdmin, getAllUsers);
 

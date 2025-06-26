@@ -1,71 +1,84 @@
 "use client"
 
-import { useState } from "react"
-import { Minus, Plus, Trash2, ShoppingCart, ArrowLeft, Truck, Shield, Clock } from "lucide-react"
+import { useCart } from "@/context/CartContext"
+import { useAuth } from "@/context/AuthContext"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Separator } from "@/components/ui/separator"
 import Link from "next/link"
 import Image from "next/image"
+import { useRouter } from "next/navigation"
+import { Minus, Plus, Trash2, ShoppingCart, ArrowLeft, Truck, Shield, Clock } from "lucide-react"
+import { useState } from "react"
+
+type CartItem = {
+  id: string
+  name: string
+  brand: string
+  price: number
+  originalPrice: number
+  quantity: number
+  image: string
+  inStock: boolean
+  warranty: string
+  category: string
+}
 
 export default function CartPage() {
-  const [cartItems, setCartItems] = useState([
-    {
-      id: 1,
-      name: "Jinko Solar 550W Mono PERC Panel",
-      brand: "Jinko Solar",
-      price: 45000,
-      originalPrice: 50000,
-      quantity: 2,
-      image: "/placeholder.svg?height=120&width=120",
-      inStock: true,
-      warranty: "25 Years",
-      category: "Solar Panels",
-    },
-    {
-      id: 2,
-      name: "Growatt 5kW Hybrid Inverter",
-      brand: "Growatt",
-      price: 85000,
-      originalPrice: 90000,
-      quantity: 1,
-      image: "/placeholder.svg?height=120&width=120",
-      inStock: true,
-      warranty: "5 Years",
-      category: "Inverters",
-    },
-    {
-      id: 3,
-      name: "Pylontech US3000C 3.5kWh Battery",
-      brand: "Pylontech",
-      price: 120000,
-      originalPrice: 125000,
-      quantity: 2,
-      image: "/placeholder.svg?height=120&width=120",
-      inStock: false,
-      warranty: "10 Years",
-      category: "Batteries",
-    },
-  ])
+  const { cart, loading, updateCartItem, removeFromCart } = useCart()
+  const { user } = useAuth()
+  const router = useRouter()
 
-  const [promoCode, setPromoCode] = useState("")
-  const [promoApplied, setPromoApplied] = useState(false)
-  const [loading, setLoading] = useState(false)
+  const [promoCode, setPromoCode] = useState<string>("")
+  const [promoApplied, setPromoApplied] = useState<boolean>(false)
 
-  // Calculate totals
+  if (!user && !loading) {
+    return (
+      <div className="py-16 flex items-center justify-center">
+        <div className="bg-white p-8 rounded-xl shadow text-center">
+          <h2 className="text-2xl mb-4">Please log in to view your cart</h2>
+          <button
+            className="bg-[#1a5ca4] text-white px-6 py-2 rounded-lg font-medium"
+            onClick={() => router.push("/auth?redirect=/cart")}
+          >
+            Login
+          </button>
+        </div>
+      </div>
+    )
+  }
+
+  // Use cart from context instead of local state
+const cartItems = cart
+  .map((item) => ({
+    id: item._id,
+    name: item.product?.name,
+    brand: item.product?.brand?.name,
+    price: item.product?.price,
+    originalPrice: item.product?.originalPrice,
+    quantity: item.quantity,
+    image: item.product?.images?.[0] || "/placeholder.svg",
+    inStock: item.product?.stock > 0,
+    warranty: item.product?.warranty || "",
+    category: item.product?.category?.name,
+  }))
+
+  // Now you can safely use cartItems
   const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0)
   const savings = cartItems.reduce((sum, item) => sum + (item.originalPrice - item.price) * item.quantity, 0)
   const shipping = subtotal > 100000 ? 0 : 2500 // Free shipping over 100k
   const promoDiscount = promoApplied ? subtotal * 0.05 : 0 // 5% discount
   const total = subtotal + shipping - promoDiscount
 
-  const updateQuantity = (id, newQuantity) => {
+  // Update quantity handler
+  const updateQuantity = async (id: string, newQuantity: number) => {
     if (newQuantity < 1) return
-    setCartItems((items) => items.map((item) => (item.id === id ? { ...item, quantity: newQuantity } : item)))
+    await updateCartItem(id, newQuantity)
   }
 
-  const removeItem = (id) => {
-    setCartItems((items) => items.filter((item) => item.id !== id))
+  // Remove item handler
+  const handleRemoveItem = async (id: string) => {
+    await removeFromCart(id)
   }
 
   const applyPromoCode = () => {
@@ -168,8 +181,10 @@ export default function CartPage() {
                       {/* Price and Controls */}
                       <div className="flex flex-col items-end">
                         <div className="text-right mb-3">
-                          <div className="text-xl font-bold text-[#1a5ca4]">PKR {item.price.toLocaleString()}</div>
-                          {item.originalPrice > item.price && (
+                          <div className="text-xl font-bold text-[#1a5ca4]">
+                            PKR {typeof item.price === "number" ? item.price.toLocaleString() : "N/A"}
+                          </div>
+                          {typeof item.originalPrice === "number" && item.originalPrice > item.price && (
                             <div className="text-sm text-gray-500 line-through">
                               PKR {item.originalPrice.toLocaleString()}
                             </div>
@@ -203,7 +218,7 @@ export default function CartPage() {
                           variant="ghost"
                           size="sm"
                           className="text-red-600 hover:text-red-700 hover:bg-red-50"
-                          onClick={() => removeItem(item.id)}
+                          onClick={() => handleRemoveItem(item.id)}
                         >
                           <Trash2 className="h-4 w-4 mr-1" />
                           Remove
@@ -225,7 +240,7 @@ export default function CartPage() {
                   </div>
                   <div>
                     <div className="font-medium text-gray-900">Free Shipping</div>
-                    <div className="text-sm text-gray-600">Orders over PKR 100,000</div>
+                    <div className="text-sm text-gray-600">Orders over PKR 20,000</div>
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
@@ -234,7 +249,7 @@ export default function CartPage() {
                   </div>
                   <div>
                     <div className="font-medium text-gray-900">Fast Delivery</div>
-                    <div className="text-sm text-gray-600">3-5 business days</div>
+                    <div className="text-sm text-gray-600">4-6 business days</div>
                   </div>
                 </div>
                 <div className="flex items-center gap-3">

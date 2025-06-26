@@ -4,29 +4,31 @@ const jwt = require("jsonwebtoken");
 const authMiddleware = async (req, res, next) => {
   let token;
 
-  if (
+  // Check for token in cookies first
+  if (req.cookies && req.cookies.accessToken) {
+    token = req.cookies.accessToken;
+  } else if (
     req.headers.authorization &&
     req.headers.authorization.startsWith("Bearer")
   ) {
-    try {
-      token = req.headers.authorization.split(" ")[1];
+    token = req.headers.authorization.split(" ")[1];
+  }
 
-      // Verify the token
-      const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
-      // Attach user to request object
-      req.user = await User.findById(decoded.id).select("-password");
-      next();
-    } catch (error) {
-      res.status(401).json({
-        success: false,
-        message: "Not authorized, token expired. Login again.",
-      });
-    }
-  } else {
-    res.status(401).json({
+  if (!token) {
+    return res.status(401).json({
       success: false,
       message: "No token provided, authorization denied",
+    });
+  }
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = await User.findById(decoded.id).select("-password");
+    next();
+  } catch (error) {
+    res.status(401).json({
+      success: false,
+      message: "Not authorized, token expired. Login again.",
     });
   }
 };

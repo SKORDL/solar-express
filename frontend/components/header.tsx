@@ -5,7 +5,7 @@ import type React from "react"
 import { useEffect, useState, useRef } from "react"
 import Link from "next/link"
 import { Search, ShoppingCart, User, Menu, X, ChevronDown, ChevronRight, MapPin } from "lucide-react"
-import { Sun, Battery, Zap, Home, Wrench, ShieldCheck } from "lucide-react"
+import { Sun, Battery, Zap, Home, Wrench, ShieldCheck, House } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import PriceTicker from "./price-ticker"
@@ -14,6 +14,7 @@ import { useAuth } from "@/context/AuthContext"
 
 // Updated category structure with Pakistani brands
 const categoryData = [
+	
 	{
 		name: "Solar Panels",
 		icon: Sun,
@@ -36,16 +37,6 @@ const categoryData = [
 				subcategories: ["Hi-MO 5 Series", "Hi-MO 6 Series", "Residential Panels", "Commercial Panels"],
 				url: "/brand/longi-solar",
 			},
-			{
-				name: "Orient Solar",
-				subcategories: ["Mono Panels", "Poly Panels", "Residential Series", "Commercial Series"],
-				url: "/brand/orient-solar",
-			},
-			{
-				name: "Waaree Solar",
-				subcategories: ["Bifacial Series", "Mono PERC", "Solar Rooftop", "Commercial Systems"],
-				url: "/brand/waaree-solar",
-			},
 		],
 	},
 	{
@@ -55,6 +46,11 @@ const categoryData = [
 		iconColor: "text-amber-600",
 		route: "/store?category=inverters",
 		brands: [
+			{
+				name: "Fox ESS",
+				subcategories: ["Hybrid Inverters", "Battery Solutions", "Single Phase", "Three Phase"],
+				url: "/brand/fox-ess",
+			},
 			{
 				name: "Sorotec",
 				subcategories: ["Primo Series", "Symo Series", "Hybrid Solutions"],
@@ -69,26 +65,6 @@ const categoryData = [
 				name: "Growatt",
 				subcategories: ["String Inverters", "Hybrid Inverters", "Microinverters", "Commercial Inverters"],
 				url: "/brand/growatt",
-			},
-			{
-				name: "1ON",
-				subcategories: ["Hybrid Inverters", "Off-Grid Inverters", "Low Voltage", "High Voltage"],
-				url: "/brand/1on",
-			},
-			{
-				name: "Fox ESS",
-				subcategories: ["Hybrid Inverters", "Battery Solutions", "Single Phase", "Three Phase"],
-				url: "/brand/fox-ess",
-			},
-			{
-				name: "Ziehl",
-				subcategories: ["Industrial Inverters", "High Power Solutions", "Commercial Systems", "Monitoring"],
-				url: "/brand/ziehl",
-			},
-			{
-				name: "Knox",
-				subcategories: ["Hybrid Inverters", "Off-Grid Solutions", "Residential", "Commercial"],
-				url: "/brand/knox",
 			},
 		],
 	},
@@ -105,19 +81,9 @@ const categoryData = [
 				url: "/brand/tesla",
 			},
 			{
-				name: "Pylontech",
-				subcategories: ["US2000 Series", "US3000 Series", "Force L2 Series", "Commercial Solutions"],
-				url: "/brand/pylontech",
-			},
-			{
 				name: "AGS Batteries",
 				subcategories: ["Lithium Series", "Lead Acid", "Deep Cycle", "Solar Batteries"],
 				url: "/brand/ags-batteries",
-			},
-			{
-				name: "Phoenix Power",
-				subcategories: ["Lithium Iron", "Gel Batteries", "Solar Storage", "Backup Systems"],
-				url: "/brand/phoenix-power",
 			},
 			{
 				name: "Exide",
@@ -147,11 +113,6 @@ const categoryData = [
 				name: "Pak Solar",
 				subcategories: ["Rooftop Frames", "Ground Mounting", "Carport Systems", "Custom Solutions"],
 				url: "/brand/pak-solar",
-			},
-			{
-				name: "ATS Mounts",
-				subcategories: ["Residential Mounts", "Commercial Systems", "Tracking Systems", "Fixed Systems"],
-				url: "/brand/ats-mounts",
 			},
 		],
 	},
@@ -192,11 +153,6 @@ const categoryData = [
 				url: "/brand/victron-energy",
 			},
 			{
-				name: "Enphase",
-				subcategories: ["Microinverters", "Batteries", "System Controllers", "Monitoring"],
-				url: "/brand/enphase",
-			},
-			{
 				name: "MTECH",
 				subcategories: ["Connectors", "Cables", "Junction Boxes", "Fuses & Breakers"],
 				url: "/brand/mtech",
@@ -212,6 +168,7 @@ const categoryData = [
 
 // Main navigation items
 const navItems = [
+	{ name: "Home", href: "/" },
 	{ name: "Solar Panels", href: "/store?category=solar-panels" },
 	{ name: "Inverters", href: "/store?category=inverters" },
 	{ name: "Batteries", href: "/store?category=batteries" },
@@ -364,8 +321,8 @@ export default function Header() {
 						<div className="hidden md:flex items-center gap-2 bg-[#0e4a8a] hover:bg-[#0a3d7a] rounded-full px-4 py-2 cursor-pointer">
 							<MapPin className="h-5 w-5 text-white" />
 							<div className="flex flex-col">
-								<span className="text-xs text-white/80">Delivery to</span>
-								<span className="text-sm font-medium text-white">Lahore, Pakistan</span>
+								<span className="text-xs text-white/80">I'm here</span>
+								<span className="text-sm font-medium text-white">Islamabad</span>
 							</div>
 							<ChevronDown className="h-4 w-4 text-white/80" />
 						</div>
@@ -473,7 +430,7 @@ export default function Header() {
 							onClick={() => setIsMenuOpen(!isMenuOpen)}
 						>
 							<Menu className="h-8 w-8" />
-							<span>Departments</span>
+							<span>Categories</span>
 							<ChevronDown className="h-4 w-4" />
 						</Button>
 

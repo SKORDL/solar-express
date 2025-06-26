@@ -72,7 +72,17 @@ var userSchema = new mongoose.Schema(
     },
     adress: [addressSchema],
     wishlist: [{ type: mongoose.Schema.Types.ObjectId, ref: "Product" }],
-    cart: [cartItemSchema],
+    cart: [
+      {
+        product: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Product",
+          required: true,
+        },
+        quantity: { type: Number, required: true, default: 1 },
+        selectedVariant: { type: String }, // e.g., "Red, 256GB" or "500W"
+      },
+    ],
 
     refreshToken: {
       type: String,
@@ -85,8 +95,10 @@ var userSchema = new mongoose.Schema(
 );
 
 userSchema.pre("save", async function (next) {
-  const salt = await bcrypt.genSaltSync(10);
+  if (!this.isModified("password")) return next();
+  const salt = await bcrypt.genSalt(10);
   this.password = await bcrypt.hash(this.password, salt);
+  next();
 });
 
 userSchema.methods.isPasswordMatched = async function (enteredPassword) {

@@ -29,6 +29,10 @@ export default function Home() {
 {/* <HomePromoGridV2/> */}
       <CategoryGrid />
 
+
+<BestSellers/>
+
+
 {/* Bottom Banner */}
       <div className="bg-[#1a5ca4] rounded-lg p-6 md:p-8 my-8 text-white">
         <div className="flex flex-col md:flex-row items-center justify-between">
@@ -40,7 +44,6 @@ export default function Home() {
         </div>
       </div>
 
-<BestSellers/>
 
       {/* Featured Promo Cards */}
       <FeaturedPromoCards />

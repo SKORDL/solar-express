@@ -181,7 +181,7 @@ export default function FeaturedBrandProducts() {
   {/* Background image covering entire card */}
   <div className="absolute inset-0 z-0">
     <Image
-      src="/q9.jpeg"
+      src="/q15.jpg"
       alt="JinkoSolar Panel"
       fill
       className="object-cover group-hover:scale-105 transition-transform duration-300"
