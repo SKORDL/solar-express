@@ -144,91 +144,89 @@ const cartItems = cart
           {/* Cart Items */}
           <div className="lg:col-span-2 space-y-4">
             {cartItems.map((item) => (
-              <div key={item.id} className="bg-white rounded-xl shadow-md p-6 border border-gray-100">
-                <div className="flex flex-col md:flex-row gap-4">
-                  {/* Product Image */}
-                  <div className="flex-shrink-0">
-                    <div className="w-24 h-24 md:w-32 md:h-32 bg-gray-100 rounded-lg overflow-hidden">
-                      <Image
-                        src={item.image || "/placeholder.svg"}
-                        alt={item.name}
-                        width={128}
-                        height={128}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                  </div>
+  <div key={item.id} className="bg-white rounded-xl shadow-md p-4 border border-gray-100 mb-4">
+    {/* Top Row - Image and Basic Info */}
+    <div className="flex gap-4 mb-4">
+      {/* Product Image */}
+      <div className="flex-shrink-0">
+        <div className="w-20 h-20 bg-gray-100 rounded-lg overflow-hidden">
+          <Image
+            src={item.image || "/placeholder.svg"}
+            alt={item.name}
+            width={80}
+            height={80}
+            className="w-full h-full object-cover"
+          />
+        </div>
+      </div>
 
-                  {/* Product Details */}
-                  <div className="flex-1">
-                    <div className="flex flex-col md:flex-row md:justify-between">
-                      <div className="flex-1">
-                        <h3 className="text-lg font-semibold text-gray-900 mb-1">{item.name}</h3>
-                        <p className="text-sm text-gray-600 mb-2">Brand: {item.brand}</p>
-                        <div className="flex items-center gap-4 mb-3">
-                          <span className="text-xs bg-[#1a5ca4]/10 text-[#1a5ca4] px-2 py-1 rounded-full">
-                            {item.category}
-                          </span>
-                          <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full">
-                            {item.warranty} Warranty
-                          </span>
-                          {!item.inStock && (
-                            <span className="text-xs bg-red-100 text-red-700 px-2 py-1 rounded-full">Out of Stock</span>
-                          )}
-                        </div>
-                      </div>
+      {/* Product Title and Price */}
+      <div className="flex-1">
+        <h3 className="text-base font-semibold text-gray-900 line-clamp-2">{item.name}</h3>
+        <div className="mt-1">
+          <span className="text-lg font-bold text-[#1a5ca4]">
+            PKR {typeof item.price === "number" ? item.price.toLocaleString() : "N/A"}
+          </span>
+          {typeof item.originalPrice === "number" && item.originalPrice > item.price && (
+            <span className="text-sm text-gray-500 line-through ml-2">
+              PKR {item.originalPrice.toLocaleString()}
+            </span>
+          )}
+        </div>
+      </div>
+    </div>
 
-                      {/* Price and Controls */}
-                      <div className="flex flex-col items-end">
-                        <div className="text-right mb-3">
-                          <div className="text-xl font-bold text-[#1a5ca4]">
-                            PKR {typeof item.price === "number" ? item.price.toLocaleString() : "N/A"}
-                          </div>
-                          {typeof item.originalPrice === "number" && item.originalPrice > item.price && (
-                            <div className="text-sm text-gray-500 line-through">
-                              PKR {item.originalPrice.toLocaleString()}
-                            </div>
-                          )}
-                        </div>
+    {/* Middle Row - Tags and Brand */}
+    <div className="flex flex-wrap gap-2 mb-3">
+      <span className="text-xs bg-[#1a5ca4]/10 text-[#1a5ca4] px-2 py-1 rounded-full">
+        {item.category}
+      </span>
+      <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full">
+        {item.warranty} Warranty
+      </span>
+      {!item.inStock && (
+        <span className="text-xs bg-red-100 text-red-700 px-2 py-1 rounded-full">Out of Stock</span>
+      )}
+      <span className="text-xs text-gray-600">Brand: {item.brand}</span>
+    </div>
 
-                        {/* Quantity Controls */}
-                        <div className="flex items-center gap-3 mb-3">
-                          <Button
-                            variant="outline"
-                            size="icon"
-                            className="h-8 w-8 border-gray-300"
-                            onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                            disabled={item.quantity <= 1}
-                          >
-                            <Minus className="h-4 w-4" />
-                          </Button>
-                          <span className="w-12 text-center font-medium">{item.quantity}</span>
-                          <Button
-                            variant="outline"
-                            size="icon"
-                            className="h-8 w-8 border-gray-300"
-                            onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                          >
-                            <Plus className="h-4 w-4" />
-                          </Button>
-                        </div>
+    {/* Bottom Row - Controls */}
+    <div className="flex items-center justify-between border-t pt-3">
+      {/* Quantity Controls */}
+      <div className="flex items-center gap-3">
+        <Button
+          variant="outline"
+          size="icon"
+          className="h-8 w-8 border-gray-300"
+          onClick={() => updateQuantity(item.id, item.quantity - 1)}
+          disabled={item.quantity <= 1}
+        >
+          <Minus className="h-4 w-4" />
+        </Button>
+        <span className="w-8 text-center font-medium">{item.quantity}</span>
+        <Button
+          variant="outline"
+          size="icon"
+          className="h-8 w-8 border-gray-300"
+          onClick={() => updateQuantity(item.id, item.quantity + 1)}
+        >
+          <Plus className="h-4 w-4" />
+        </Button>
+      </div>
 
-                        {/* Remove Button */}
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          className="text-red-600 hover:text-red-700 hover:bg-red-50"
-                          onClick={() => handleRemoveItem(item.id)}
-                        >
-                          <Trash2 className="h-4 w-4 mr-1" />
-                          Remove
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
+      {/* Remove Button */}
+      <Button
+        variant="ghost"
+        size="sm"
+        className="text-red-600 hover:text-red-700 hover:bg-red-50"
+        onClick={() => handleRemoveItem(item.id)}
+      >
+        <Trash2 className="h-4 w-4 mr-1" />
+        Remove
+      </Button>
+    </div>
+  </div>
+))}
 
             {/* Shipping Info */}
             <div className="bg-white rounded-xl shadow-md p-6 border border-gray-100">
@@ -363,7 +361,7 @@ const cartItems = cart
               {/* Checkout Button - Coming Soon */}
               <div className="mt-6">
                 <Button className="w-full bg-gray-400 text-white py-3 text-lg font-medium cursor-not-allowed" disabled>
-                  Checkout Page Coming Soon
+                  Payment Page Coming Soon
                 </Button>
                 <p className="text-center text-sm text-gray-500 mt-2">
                   For now, please use WhatsApp to complete your order
@@ -387,44 +385,7 @@ const cartItems = cart
         </div>
 
         {/* Recommended Products */}
-        <div className="mt-12">
-          <div className="bg-white rounded-xl shadow-md p-6 border border-gray-100">
-            <h3 className="text-xl font-bold text-gray-900 mb-6">Complete Your Solar System</h3>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {[
-                { name: "Solar Mounting Kit", price: "15,000", image: "/placeholder.svg?height=80&width=80" },
-                { name: "DC/AC Cables Set", price: "8,500", image: "/placeholder.svg?height=80&width=80" },
-                { name: "Monitoring System", price: "25,000", image: "/placeholder.svg?height=80&width=80" },
-              ].map((product, index) => (
-                <div
-                  key={index}
-                  className="flex items-center gap-4 p-4 border border-gray-200 rounded-lg hover:border-[#1a5ca4] transition-colors cursor-pointer"
-                >
-                  <div className="w-16 h-16 bg-gray-100 rounded-lg overflow-hidden">
-                    <Image
-                      src={product.image || "/placeholder.svg"}
-                      alt={product.name}
-                      width={64}
-                      height={64}
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                  <div className="flex-1">
-                    <h4 className="font-medium text-gray-900">{product.name}</h4>
-                    <p className="text-[#1a5ca4] font-semibold">PKR {product.price}</p>
-                  </div>
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    className="border-[#f26522] text-[#f26522] hover:bg-[#f26522] hover:text-white"
-                  >
-                    Add
-                  </Button>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
+        
       </div>
     </div>
   )

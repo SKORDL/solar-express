@@ -318,7 +318,7 @@ export default function Header() {
 							</div>
 						</Link>
 
-						<div className="hidden md:flex items-center gap-2 bg-[#0e4a8a] hover:bg-[#0a3d7a] rounded-full px-4 py-2 cursor-pointer">
+						<div className="hidden md:flex items-center gap-2 bg-[#0e4a8a] hover:bg-[#0a3d7a] rounded-full px-4 py-1 cursor-pointer">
 							<MapPin className="h-5 w-5 text-white" />
 							<div className="flex flex-col">
 								<span className="text-xs text-white/80">I'm here</span>
@@ -329,7 +329,7 @@ export default function Header() {
 					</div>
 
 					{/* Search bar */}
-					<div className="flex-1 max-w-2xl mx-4">
+					<div className="flex-1 max-w-lg mx-4">
 						<form onSubmit={handleSearch}>
 							<div className="relative">
 								<Input
@@ -399,11 +399,10 @@ export default function Header() {
 						<Link href="/cart" className="relative">
 							<div className="bg-[#f26522] rounded-full w-10 h-10 flex items-center justify-center">
 								<ShoppingCart className="h-5 w-5 text-white" />
-								<span className="absolute -top-1 -right-1 bg-[#0e4a8a] text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+								<span className="absolute -top-1 -right-1 bg-[#0e4a8a] text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
 									0
 								</span>
 							</div>
-							<span className="hidden md:block text-xs text-white mt-1">PKR 0.00</span>
 						</Link>
 
 						{/* Mobile menu toggle */}

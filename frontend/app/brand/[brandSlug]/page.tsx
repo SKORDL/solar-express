@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { ChevronRight, Filter, ChevronDown } from "lucide-react"
+import { ChevronRight, Filter, ChevronDown  } from "lucide-react"
 import Link from "next/link"
 import Image from "next/image"
 import InBrandAd from "@/components/inBrandAd"
@@ -13,11 +13,9 @@ const brandsData = {
   "jinko-solar": {
     name: "Jinko Solar",
     logo: "/jinko-logo.webp",
-    banner: "/bann-4.jpg", // Desktop banner
-    mobileBanner: "/bann-1.jpg", // Mobile banner
-
-    description:
-      "Jinko is one of the largest and most innovative solar module manufacturers in the world. With a strong global presence, Jinko Solar is known for its high-efficiency panels and commitment to quality and innovation.",
+    banner: "/bann-4.png",
+    mobileBanner: "/bann-4.png",
+    description: "Jinko is one of the largest and most innovative solar module manufacturers in the world. With a strong global presence, Jinko Solar is known for its high-efficiency panels and commitment to quality and innovation.",
     established: 2006,
     headquarters: "Shanghai",
     warranty: "12-year product warranty, 25-year performance warranty",
@@ -56,10 +54,9 @@ const brandsData = {
   "canadian-solar": {
     name: "Canadian Solar",
     logo: "canadian-logo",
-    banner: "/canadian-banner.jpg", // Desktop banner
-    mobileBanner: "/canadian-banner-mobile.jpg", // Mobile banner
-    description:
-      "Canadian Solar is one of the world's largest solar technology and renewable energy companies. They are a leading manufacturer of solar photovoltaic modules and provider of solar energy solutions with operations across the globe.",
+    banner: "/bann-4.png",
+    mobileBanner: "/bann-4.png",
+    description: "Canadian Solar is one of the world's largest solar technology and renewable energy companies. They are a leading manufacturer of solar photovoltaic modules and provider of solar energy solutions with operations across the globe.",
     established: 2001,
     headquarters: "Ontario, Canada",
     warranty: "12-year product warranty, 25-year performance warranty",
@@ -98,10 +95,9 @@ const brandsData = {
   "longi-solar": {
     name: "Longi Solar",
     logo: "longi-logo",
-    banner: "/longi-banner.jpg", // Desktop banner
-    mobileBanner: "/longi-banner-mobile.jpg", // Mobile banner
-    description:
-      "LONGi Solar is the world's largest manufacturer of high-efficiency mono-crystalline solar cells and modules. The company focuses on technological innovation and has set multiple world records for cell efficiency.",
+    banner: "/bann-4.png",
+    mobileBanner: "/bann-4.png",
+    description: "LONGi Solar is the world's largest manufacturer of high-efficiency mono-crystalline solar cells and modules. The company focuses on technological innovation and has set multiple world records for cell efficiency.",
     established: 2000,
     headquarters: "Xi'an, China",
     warranty: "12-year product warranty, 25-year performance warranty",
@@ -137,55 +133,53 @@ const brandsData = {
       },
     ],
   },
-  "ja-solar": {
-    name: "JA Solar",
-    logo: "ja-logo",
-    banner: "/ja-banner.jpg", // Desktop banner
-    mobileBanner: "/ja-banner-mobile.jpg", // Mobile banner
-    description:
-      "JA Solar is a manufacturer of high-performance photovoltaic products. The company has 12 manufacturing bases and more than 20 branches around the world, with products available in 135 countries and regions worldwide.",
-    established: 2005,
-    headquarters: "Beijing, China",
-    warranty: "12-year product warranty, 25-year performance warranty",
-    categories: ["MBB Half-Cell", "Bifacial Modules", "All Black Series", "Commercial Series"],
+  "fox-ess": {
+    name: "Fox ESS",
+    logo: "/fox-logo.webp",
+    banner: "/bann-7.png",
+    mobileBanner: "/bann-6.png",
+    description: "Fox ESS is a global leader in energy storage solutions, specializing in hybrid inverters, battery systems, and smart energy management. Their products are known for high efficiency and reliability in residential and commercial applications.",
+    established: 2012,
+    headquarters: "Jiangsu, China",
+    warranty: "10-year product warranty",
+    categories: ["Hybrid Inverters", "Battery Solutions", "Single Phase", "Three Phase"],
     featuredProducts: [
       {
-        id: "ja-mbb",
-        name: "JA Solar 530W MBB Half-Cell Module",
-        price: 41200,
-        discountPrice: 38500,
-        image: "ja-panel-1",
+        id: "fox-hybrid",
+        name: "Fox ESS H1 5kW Hybrid Inverter",
+        price: 180000,
+        discountPrice: 170000,
+        image: "fox-inverter-1",
       },
       {
-        id: "ja-bifacial",
-        name: "JA Solar 545W Bifacial Module",
-        price: 43000,
+        id: "fox-battery",
+        name: "Fox ESS LV5200 5.12kWh Battery",
+        price: 250000,
+        discountPrice: 235000,
+        image: "fox-battery-1",
+      },
+      {
+        id: "fox-three-phase",
+        name: "Fox ESS T30 30kW Three Phase Inverter",
+        price: 450000,
         discountPrice: null,
-        image: "ja-panel-2",
+        image: "fox-inverter-2",
       },
       {
-        id: "ja-residential",
-        name: "JA Solar 410W All Black Residential Panel",
-        price: 31500,
-        discountPrice: 29000,
-        image: "ja-panel-3",
-      },
-      {
-        id: "ja-commercial",
-        name: "JA Solar 580W Commercial Panel",
-        price: 46500,
-        discountPrice: null,
-        image: "ja-panel-4",
+        id: "fox-single-phase",
+        name: "Fox ESS S6 6kW Single Phase Inverter",
+        price: 190000,
+        discountPrice: 180000,
+        image: "fox-inverter-3",
       },
     ],
   },
-  sorotec: {
-    name: "sorotec",
+  "sorotec": {
+    name: "Sorotec",
     logo: "/sorotec-logo.png",
-    banner: "/bann-3.png", // Desktop banner
-    mobileBanner: "/bann-3-mobile.png", // Mobile banner
-    description:
-      "Sorotec is a global leader in smart energy solutions, specializing in residential and commercial solar inverters, storage systems, and smart energy management solutions. The company is known for its reliable and cost-effective products.",
+    banner: "/bann-3.png",
+    mobileBanner: "/bann-3.png",
+    description: "Sorotec is a global leader in smart energy solutions, specializing in residential and commercial solar inverters, storage systems, and smart energy management solutions. The company is known for its reliable and cost-effective products.",
     established: 2010,
     headquarters: "Shenzhen, China",
     warranty: "5-10 year standard warranty, extendable to 20 years",
@@ -214,8 +208,581 @@ const brandsData = {
       },
     ],
   },
-  // Add more brands as needed
-}
+  "luxpower": {
+    name: "Luxpower",
+    logo: "/luxpower-logo.png",
+    banner: "/bann-3.png",
+    mobileBanner: "/bann-3.png",
+    description: "Luxpower is a leading manufacturer of solar inverters and energy storage solutions, offering a wide range of products for residential, commercial, and industrial applications with a focus on innovation and efficiency.",
+    established: 2007,
+    headquarters: "Shenzhen, China",
+    warranty: "5-10 year product warranty",
+    categories: ["Hybrid Inverters", "Off-Grid Inverters", "Grid-Tie Inverters", "Commercial Solutions"],
+    featuredProducts: [
+      {
+        id: "lux-hybrid",
+        name: "Luxpower LXP 6kW Hybrid Inverter",
+        price: 195000,
+        discountPrice: 185000,
+        image: "lux-inverter-1",
+      },
+      {
+        id: "lux-offgrid",
+        name: "Luxpower SNA 5kW Off-Grid Inverter",
+        price: 175000,
+        discountPrice: 165000,
+        image: "lux-inverter-2",
+      },
+      {
+        id: "lux-gridtie",
+        name: "Luxpower GCI 10kW Grid-Tie Inverter",
+        price: 220000,
+        discountPrice: null,
+        image: "lux-inverter-3",
+      },
+      {
+        id: "lux-commercial",
+        name: "Luxpower CMT 20kW Commercial Inverter",
+        price: 380000,
+        discountPrice: 360000,
+        image: "lux-inverter-4",
+      },
+    ],
+  },
+  "growatt": {
+    name: "Growatt",
+    logo: "/growatt-logo.png",
+    banner: "/bann-3.png",
+    mobileBanner: "/bann-3.png",
+    description: "Growatt is a global leader in photovoltaic inverter technology and energy storage solutions, offering innovative products for residential, commercial, and utility-scale applications worldwide.",
+    established: 2011,
+    headquarters: "Shenzhen, China",
+    warranty: "5-10 year product warranty",
+    categories: ["String Inverters", "Hybrid Inverters", "Microinverters", "Commercial Inverters"],
+    featuredProducts: [
+      {
+        id: "growatt-hybrid",
+        name: "Growatt MIN 5000TL-XH Hybrid Inverter",
+        price: 175000,
+        discountPrice: 165000,
+        image: "growatt-inverter-1",
+      },
+      {
+        id: "growatt-string",
+        name: "Growatt MOD 10kW String Inverter",
+        price: 210000,
+        discountPrice: null,
+        image: "growatt-inverter-2",
+      },
+      {
+        id: "growatt-micro",
+        name: "Growatt MIC 1000TL-X Microinverter",
+        price: 45000,
+        discountPrice: 42000,
+        image: "growatt-inverter-3",
+      },
+      {
+        id: "growatt-commercial",
+        name: "Growatt MAC 50kW Commercial Inverter",
+        price: 850000,
+        discountPrice: 800000,
+        image: "growatt-inverter-4",
+      },
+    ],
+  },
+  "tesla": {
+    name: "Tesla",
+    logo: "/tesla-logo.png",
+    banner: "/bann-5.webp",
+    mobileBanner: "/bann-5.webp",
+    description: "Tesla Energy is revolutionizing energy storage with its Powerwall and Powerpack systems, offering sleek, high-capacity lithium-ion battery solutions for homes and businesses.",
+    established: 2003,
+    headquarters: "Palo Alto, California",
+    warranty: "10-year product warranty",
+    categories: ["Powerwall", "Powerpack", "Accessories", "Gateway Systems"],
+    featuredProducts: [
+      {
+        id: "tesla-powerwall",
+        name: "Tesla Powerwall 2 13.5kWh Battery",
+        price: 850000,
+        discountPrice: 820000,
+        image: "tesla-battery-1",
+      },
+      {
+        id: "tesla-gateway",
+        name: "Tesla Backup Gateway 2",
+        price: 120000,
+        discountPrice: null,
+        image: "tesla-gateway-1",
+      },
+      {
+        id: "tesla-powerpack",
+        name: "Tesla Powerpack 210kWh System",
+        price: 6500000,
+        discountPrice: 6200000,
+        image: "tesla-battery-2",
+      },
+      {
+        id: "tesla-accessories",
+        name: "Tesla Solar Inverter 7.6kW",
+        price: 250000,
+        discountPrice: 235000,
+        image: "tesla-inverter-1",
+      },
+    ],
+  },
+  "ags-batteries": {
+    name: "AGS Batteries",
+    logo: "/ags-logo.png",
+    banner: "/bann-5.webp",
+    mobileBanner: "/bann-5.webp",
+    description: "AGS Batteries specializes in high-performance energy storage solutions, offering a wide range of lithium and lead-acid batteries for solar, automotive, and industrial applications.",
+    established: 1995,
+    headquarters: "Texas, USA",
+    warranty: "3-10 year product warranty depending on model",
+    categories: ["Lithium Series", "Lead Acid", "Deep Cycle", "Solar Batteries"],
+    featuredProducts: [
+      {
+        id: "ags-lithium",
+        name: "AGS 5.12kWh Lithium Solar Battery",
+        price: 220000,
+        discountPrice: 210000,
+        image: "ags-battery-1",
+      },
+      {
+        id: "ags-deepcycle",
+        name: "AGS 200Ah Deep Cycle AGM Battery",
+        price: 85000,
+        discountPrice: 80000,
+        image: "ags-battery-2",
+      },
+      {
+        id: "ags-solar",
+        name: "AGS 100Ah Solar Gel Battery",
+        price: 65000,
+        discountPrice: null,
+        image: "ags-battery-3",
+      },
+      {
+        id: "ags-leadacid",
+        name: "AGS 12V 150Ah Lead Acid Battery",
+        price: 55000,
+        discountPrice: 50000,
+        image: "ags-battery-4",
+      },
+    ],
+  },
+  "exide": {
+    name: "Exide",
+    logo: "/exide-logo.png",
+    banner: "/bann-5.webp",
+    mobileBanner: "/bann-5.webp",
+    description: "Exide Technologies is a global provider of stored electrical energy solutions, manufacturing and recycling lead-acid batteries for automotive and industrial markets with a strong focus on solar applications.",
+    established: 1888,
+    headquarters: "Georgia, USA",
+    warranty: "2-5 year product warranty",
+    categories: ["Solar Specific", "Tubular Batteries", "Industrial Series", "Home Systems"],
+    featuredProducts: [
+      {
+        id: "exide-solar",
+        name: "Exide Solar 150Ah Tubular Battery",
+        price: 75000,
+        discountPrice: 70000,
+        image: "exide-battery-1",
+      },
+      {
+        id: "exide-industrial",
+        name: "Exide 200Ah Industrial Battery",
+        price: 90000,
+        discountPrice: null,
+        image: "exide-battery-2",
+      },
+      {
+        id: "exide-homesystem",
+        name: "Exide Home Solar 200Ah Battery Bank",
+        price: 180000,
+        discountPrice: 170000,
+        image: "exide-battery-3",
+      },
+      {
+        id: "exide-tubular",
+        name: "Exide 180Ah Tall Tubular Battery",
+        price: 80000,
+        discountPrice: 75000,
+        image: "exide-battery-4",
+      },
+    ],
+  },
+  "k2-systems": {
+    name: "K2 Systems",
+    logo: "/k2-logo.png",
+    banner: "/bann-5.webp",
+    mobileBanner: "/bann-5.webp",
+    description: "K2 Systems is a leading manufacturer of solar mounting systems, offering innovative and reliable solutions for rooftops, ground mounts, and specialized applications worldwide.",
+    established: 2009,
+    headquarters: "Stuttgart, Germany",
+    warranty: "10-25 year product warranty",
+    categories: ["Flat Roof Systems", "Pitched Roof Systems", "Ground Mount Systems", "Accessories"],
+    featuredProducts: [
+      {
+        id: "k2-flatroof",
+        name: "K2 Flat Roof Mounting System",
+        price: 120000,
+        discountPrice: 110000,
+        image: "k2-mount-1",
+      },
+      {
+        id: "k2-pitched",
+        name: "K2 Pitched Roof Rail System",
+        price: 85000,
+        discountPrice: null,
+        image: "k2-mount-2",
+      },
+      {
+        id: "k2-ground",
+        name: "K2 Ground Mount System (10kW)",
+        price: 250000,
+        discountPrice: 230000,
+        image: "k2-mount-3",
+      },
+      {
+        id: "k2-accessories",
+        name: "K2 Universal Mounting Clamps",
+        price: 15000,
+        discountPrice: 12000,
+        image: "k2-mount-4",
+      },
+    ],
+  },
+  "ironridge": {
+    name: "IronRidge",
+    logo: "/ironridge-logo.png",
+    banner: "/ironridge-banner.jpg",
+    mobileBanner: "/ironridge-banner-mobile.jpg",
+    description: "IronRidge designs and manufactures solar racking systems that are engineered for durability, ease of installation, and maximum performance across residential and commercial applications.",
+    established: 2007,
+    headquarters: "California, USA",
+    warranty: "10-25 year product warranty",
+    categories: ["Roof Mount", "Ground Mount", "Components", "Accessories"],
+    featuredProducts: [
+      {
+        id: "ironridge-roof",
+        name: "IronRidge XR100 Roof Mount System",
+        price: 95000,
+        discountPrice: 90000,
+        image: "ironridge-mount-1",
+      },
+      {
+        id: "ironridge-ground",
+        name: "IronRidge Ground Mount System (5kW)",
+        price: 180000,
+        discountPrice: 170000,
+        image: "ironridge-mount-2",
+      },
+      {
+        id: "ironridge-components",
+        name: "IronRidge UFO Mid Clamp",
+        price: 5000,
+        discountPrice: null,
+        image: "ironridge-mount-3",
+      },
+      {
+        id: "ironridge-accessories",
+        name: "IronRidge FlashFoot 2 Mount",
+        price: 8000,
+        discountPrice: 7500,
+        image: "ironridge-mount-4",
+      },
+    ],
+  },
+  "pak-solar": {
+    name: "Pak Solar",
+    logo: "/pak-solar-logo.png",
+    banner: "/pak-solar-banner.jpg",
+    mobileBanner: "/pak-solar-banner-mobile.jpg",
+    description: "Pak Solar provides high-quality solar mounting solutions for various applications, including rooftop, ground mount, and carport systems, with a focus on durability and cost-effectiveness.",
+    established: 2012,
+    headquarters: "Lahore, Pakistan",
+    warranty: "5-10 year product warranty",
+    categories: ["Rooftop Frames", "Ground Mounting", "Carport Systems", "Custom Solutions"],
+    featuredProducts: [
+      {
+        id: "pak-rooftop",
+        name: "Pak Solar Rooftop Mounting Frame (5kW)",
+        price: 80000,
+        discountPrice: 75000,
+        image: "pak-mount-1",
+      },
+      {
+        id: "pak-ground",
+        name: "Pak Solar Ground Mount Structure (10kW)",
+        price: 200000,
+        discountPrice: 190000,
+        image: "pak-mount-2",
+      },
+      {
+        id: "pak-carport",
+        name: "Pak Solar Carport System (2 cars)",
+        price: 350000,
+        discountPrice: null,
+        image: "pak-mount-3",
+      },
+      {
+        id: "pak-custom",
+        name: "Pak Solar Custom Mounting Solution",
+        price: 150000,
+        discountPrice: 140000,
+        image: "pak-mount-4",
+      },
+    ],
+  },
+  "solar-packages": {
+    name: "Solar Packages",
+    logo: "/solar-packages-logo.png",
+    banner: "/solar-packages-banner.jpg",
+    mobileBanner: "/solar-packages-banner-mobile.jpg",
+    description: "Complete solar power systems designed for easy installation and optimal performance, offering all-in-one solutions for residential and commercial energy needs.",
+    established: 2015,
+    headquarters: "Global Solutions",
+    warranty: "Varies by components",
+    categories: ["3kW Systems", "5kW Systems", "10kW Systems", "Commercial Systems"],
+    featuredProducts: [
+      {
+        id: "solar-3kw",
+        name: "3kW Complete Solar System with Battery",
+        price: 650000,
+        discountPrice: 620000,
+        image: "solar-system-1",
+      },
+      {
+        id: "solar-5kw",
+        name: "5kW Hybrid Solar System Package",
+        price: 950000,
+        discountPrice: null,
+        image: "solar-system-2",
+      },
+      {
+        id: "solar-10kw",
+        name: "10kW Commercial Solar System",
+        price: 1800000,
+        discountPrice: 1750000,
+        image: "solar-system-3",
+      },
+      {
+        id: "solar-commercial",
+        name: "20kW Commercial Solar Package",
+        price: 3500000,
+        discountPrice: 3400000,
+        image: "solar-system-4",
+      },
+    ],
+  },
+  "off-grid-solutions": {
+    name: "Off-Grid Solutions",
+    logo: "/offgrid-logo.png",
+    banner: "/offgrid-banner.jpg",
+    mobileBanner: "/offgrid-banner-mobile.jpg",
+    description: "Comprehensive off-grid solar power systems designed for complete energy independence, ideal for remote locations, rural electrification, and backup power applications.",
+    established: 2010,
+    headquarters: "Global Solutions",
+    warranty: "Varies by components",
+    categories: ["Residential", "Commercial", "Industrial", "Agricultural"],
+    featuredProducts: [
+      {
+        id: "offgrid-residential",
+        name: "5kW Off-Grid Residential System",
+        price: 1200000,
+        discountPrice: 1150000,
+        image: "offgrid-system-1",
+      },
+      {
+        id: "offgrid-commercial",
+        name: "15kW Off-Grid Commercial System",
+        price: 2500000,
+        discountPrice: null,
+        image: "offgrid-system-2",
+      },
+      {
+        id: "offgrid-industrial",
+        name: "30kW Industrial Off-Grid System",
+        price: 4500000,
+        discountPrice: 4300000,
+        image: "offgrid-system-3",
+      },
+      {
+        id: "offgrid-agricultural",
+        name: "10kW Agricultural Solar Pumping System",
+        price: 2200000,
+        discountPrice: 2100000,
+        image: "offgrid-system-4",
+      },
+    ],
+  },
+  "hybrid-systems": {
+    name: "Hybrid Systems",
+    logo: "/hybrid-logo.png",
+    banner: "/hybrid-banner.jpg",
+    mobileBanner: "/hybrid-banner-mobile.jpg",
+    description: "Advanced hybrid solar systems that combine grid-tie and battery backup functionality, offering the benefits of both worlds for reliable, efficient power solutions.",
+    established: 2012,
+    headquarters: "Global Solutions",
+    warranty: "Varies by components",
+    categories: ["With Battery", "Without Battery", "Grid-Assisted", "Backup Solutions"],
+    featuredProducts: [
+      {
+        id: "hybrid-battery",
+        name: "5kW Hybrid System with 10kWh Battery",
+        price: 1400000,
+        discountPrice: 1350000,
+        image: "hybrid-system-1",
+      },
+      {
+        id: "hybrid-nobattery",
+        name: "8kW Hybrid System (No Battery)",
+        price: 900000,
+        discountPrice: null,
+        image: "hybrid-system-2",
+      },
+      {
+        id: "hybrid-gridassist",
+        name: "10kW Grid-Assisted Hybrid System",
+        price: 1800000,
+        discountPrice: 1750000,
+        image: "hybrid-system-3",
+      },
+      {
+        id: "hybrid-backup",
+        name: "3kW Essential Backup Hybrid System",
+        price: 850000,
+        discountPrice: 800000,
+        image: "hybrid-system-4",
+      },
+    ],
+  },
+  "victron-energy": {
+    name: "Victron Energy",
+    logo: "/victron-logo.png",
+    banner: "/victron-banner.jpg",
+    mobileBanner: "/victron-banner-mobile.jpg",
+    description: "Victron Energy is a global leader in power conversion equipment, offering high-quality inverters, chargers, and monitoring systems for marine, automotive, and renewable energy applications.",
+    established: 1975,
+    headquarters: "Almere, Netherlands",
+    warranty: "2-5 year product warranty",
+    categories: ["Monitoring Systems", "Charge Controllers", "Inverter Chargers", "System Integration"],
+    featuredProducts: [
+      {
+        id: "victron-monitoring",
+        name: "Victron GX Touch 50 Monitoring System",
+        price: 65000,
+        discountPrice: 60000,
+        image: "victron-accessory-1",
+      },
+      {
+        id: "victron-chargecontroller",
+        name: "Victron SmartSolar MPPT 250/100",
+        price: 120000,
+        discountPrice: null,
+        image: "victron-accessory-2",
+      },
+      {
+        id: "victron-invertercharger",
+        name: "Victron MultiPlus-II 48/5000 Inverter Charger",
+        price: 250000,
+        discountPrice: 240000,
+        image: "victron-accessory-3",
+      },
+      {
+        id: "victron-integration",
+        name: "Victron Cerbo GX System Controller",
+        price: 80000,
+        discountPrice: 75000,
+        image: "victron-accessory-4",
+      },
+    ],
+  },
+  "mtech": {
+    name: "MTECH",
+    logo: "/mtech-logo.png",
+    banner: "/mtech-banner.jpg",
+    mobileBanner: "/mtech-banner-mobile.jpg",
+    description: "MTECH specializes in high-quality solar accessories and components, including connectors, cables, and protection devices that ensure safe and efficient solar installations.",
+    established: 2005,
+    headquarters: "Guangdong, China",
+    warranty: "1-3 year product warranty",
+    categories: ["Connectors", "Cables", "Junction Boxes", "Fuses & Breakers"],
+    featuredProducts: [
+      {
+        id: "mtech-connectors",
+        name: "MTECH MC4 Connector Set (10 pairs)",
+        price: 12000,
+        discountPrice: 10000,
+        image: "mtech-accessory-1",
+      },
+      {
+        id: "mtech-cables",
+        name: "MTECH 6mm² Solar Cable (100m)",
+        price: 45000,
+        discountPrice: null,
+        image: "mtech-accessory-2",
+      },
+      {
+        id: "mtech-junction",
+        name: "MTECH 4-in-1 PV Junction Box",
+        price: 15000,
+        discountPrice: 14000,
+        image: "mtech-accessory-3",
+      },
+      {
+        id: "mtech-fuses",
+        name: "MTECH 1000V DC Fuse Set (10 pieces)",
+        price: 8000,
+        discountPrice: 7500,
+        image: "mtech-accessory-4",
+      },
+    ],
+  },
+  "pel-solar": {
+    name: "PEL Solar",
+    logo: "/pel-logo.png",
+    banner: "/pel-banner.jpg",
+    mobileBanner: "/pel-banner-mobile.jpg",
+    description: "PEL Solar offers a comprehensive range of solar accessories and electrical components designed to enhance the safety and performance of photovoltaic systems.",
+    established: 1998,
+    headquarters: "Lahore, Pakistan",
+    warranty: "1-2 year product warranty",
+    categories: ["Meters", "DC Disconnects", "Combiner Boxes", "AC/DC Cables"],
+    featuredProducts: [
+      {
+        id: "pel-meter",
+        name: "PEL Solar Energy Meter",
+        price: 25000,
+        discountPrice: 23000,
+        image: "pel-accessory-1",
+      },
+      {
+        id: "pel-disconnect",
+        name: "PEL 1000V DC Disconnect Switch",
+        price: 15000,
+        discountPrice: null,
+        image: "pel-accessory-2",
+      },
+      {
+        id: "pel-combiner",
+        name: "PEL 6-string PV Combiner Box",
+        price: 30000,
+        discountPrice: 28000,
+        image: "pel-accessory-3",
+      },
+      {
+        id: "pel-cables",
+        name: "PEL 10mm² Solar Cable (50m)",
+        price: 35000,
+        discountPrice: 32000,
+        image: "pel-accessory-4",
+      },
+    ],
+  }
+};
 
 // Format price in PKR with commas
 const formatPrice = (price) => {
@@ -316,11 +883,6 @@ export default function BrandPage({ params }) {
             <div className="text-center sm:text-left">
               <span className="font-medium text-gray-700">HQ:</span> {brand.headquarters}
             </div>
-            <div className="text-center sm:text-left">
-              <span className="font-medium text-gray-700">Warranty:</span> 
-              <span className="hidden sm:inline"> {brand.warranty}</span>
-              <span className="sm:hidden"> Available</span>
-            </div>
           </div>
         </div>
       </div>
@@ -388,6 +950,7 @@ export default function BrandPage({ params }) {
                 <ChevronDown className={`h-4 w-4 transition-transform ${showMobileFilters ? 'rotate-180' : ''}`} />
               </Button>
             </div>
+            
 
             {/* Categories sidebar - Hidden on mobile by default, shown when toggled */}
             {(showMobileFilters || window.innerWidth >= 1024) && (
@@ -445,6 +1008,38 @@ export default function BrandPage({ params }) {
                   </select>
                 </div>
               </div>
+
+              <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
+            {brand.featuredProducts.map((product) => (
+              <Link key={product.id} href={`/product/${product.id}`}>
+                <div className="border border-gray-200 rounded-lg overflow-hidden hover:border-[#1a5ca4] hover:shadow-md transition-colors">
+                  <div className="h-32 sm:h-48 bg-gray-100 relative">
+                    <Image 
+                      src={product.image.startsWith('/') ? product.image : `/products/${product.image}.jpg`}
+                      alt={product.name}
+                      layout="fill"
+                      objectFit="contain"
+                    />
+                  </div>
+                  <div className="p-2 sm:p-4">
+                    <h3 className="font-medium mb-2 line-clamp-2 text-xs sm:text-sm h-8 sm:h-12">{product.name}</h3>
+                    <div className="flex items-center gap-1 sm:gap-2 mb-2 sm:mb-3">
+                      {product.discountPrice ? (
+                        <>
+                          <span className="text-[#1a5ca4] font-bold text-xs sm:text-sm">{formatPrice(product.discountPrice)}</span>
+                          <span className="text-gray-500 line-through text-xs">{formatPrice(product.price)}</span>
+                        </>
+                      ) : (
+                        <span className="text-[#1a5ca4] font-bold text-xs sm:text-sm">{formatPrice(product.price)}</span>
+                      )}
+                    </div>
+                    <Button className="w-full bg-[#1a5ca4] hover:bg-[#0e4a8a] text-xs sm:text-sm py-1 sm:py-2">Add to Cart</Button>
+                  </div>
+                </div>
+              </Link>
+            ))}
+            
+          </div>
 
               {/* Pagination */}
               <div className="flex justify-center mt-6 sm:mt-8">

@@ -33,6 +33,7 @@ export default function ProductClientSection({
   const [selectedLabel, setSelectedLabel] = useState(
     product.variants && product.variants.length > 0 ? product.variants[0].name : ""
   )
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0) // <-- Add this line
   const resourcesRef = useRef(null) // <-- ADD THIS LINE
 
   const handleAddToCart = async () => {
@@ -117,49 +118,51 @@ if (product.blogs && product.blogs.length > 0) {
       {/* Product Overview */}
       <div className="flex flex-col lg:flex-row gap-8 mb-12">
         {/* Product Images */}
-<div className="w-full lg:w-1/2">
-  <div className="border border-gray-200 rounded-lg overflow-hidden mb-4">
-    <div className="bg-gray-100 flex items-center justify-center" style={{ height: '24rem' }}>
-      <img 
-        src={product.images[0]} 
-        alt={product.name}
-        className="max-h-full object-contain"
-        onError={(e) => {
-          e.target.style.display = 'none';
-          e.target.nextSibling.style.display = 'flex';
-        }}
-      />
-      <div className="text-gray-400 hidden w-full h-full items-center justify-center text-center p-4">[{product.images[0]}]</div>
-    </div>
-  </div>
+        <div className="w-full lg:w-1/2 flex flex-row gap-4">
+          {/* Thumbnails on the left */}
+          <div className="flex flex-col gap-4">
+            {product.images.slice(0, 4).map((image, index) => (
+              <div
+                key={index}
+                className={`border border-gray-200 rounded-lg overflow-hidden w-20 h-20 bg-gray-100 flex items-center justify-center cursor-pointer ${selectedImageIndex === index ? "ring-2 ring-[#1a5ca4]" : ""}`}
+                onClick={() => setSelectedImageIndex(index)}
+              >
+                <img 
+                  src={image} 
+                  alt={`${product.name} ${index + 1}`}
+                  className="max-h-full max-w-full object-contain"
+                  onError={(e) => {
+                    e.target.style.display = 'none';
+                    e.target.nextSibling.style.display = 'flex';
+                  }}
+                />
+                <div className="text-gray-400 hidden w-full h-full items-center justify-center text-center p-2 text-xs">[{image}]</div>
+              </div>
+            ))}
+          </div>
 
-  <div className="grid grid-cols-3 gap-4">
-    {product.images.slice(0, 3).map((image, index) => (
-      <div
-        key={index}
-        className="border border-gray-200 rounded-lg overflow-hidden h-34 bg-gray-100 flex items-center justify-center"
-      >
-        <img 
-          src={image} 
-          alt={`${product.name} ${index + 1}`}
-          className="max-h-full max-w-full object-contain"
-          onError={(e) => {
-            e.target.style.display = 'none';
-            e.target.nextSibling.style.display = 'flex';
-          }}
-        />
-        <div className="text-gray-400 hidden w-full h-full items-center justify-center text-center p-2 text-xs">[{image}]</div>
-      </div>
-    ))}
-  </div>
-</div>
-
+          {/* Main image on the right */}
+          <div className="border border-gray-200 rounded-lg overflow-hidden mb-4 flex-1">
+            <div className="bg-gray-100 flex items-center justify-center" style={{ height: '24rem' }}>
+              <img 
+                src={product.images[selectedImageIndex]} 
+                alt={product.name}
+                className="max-h-full object-contain"
+                onError={(e) => {
+                  e.target.style.display = 'none';
+                  e.target.nextSibling.style.display = 'flex';
+                }}
+              />
+              <div className="text-gray-400 hidden w-full h-full items-center justify-center text-center p-4">[{product.images[selectedImageIndex]}]</div>
+            </div>
+          </div>
+        </div>
 
         {/* Product Details */}
         <div className="w-full lg:w-1/2">
           <h1 className="text-3xl font-bold mb-2">{product.name}</h1>
 
-          <div className="flex items-center gap-4 mb-4">
+          {/* <div className="flex items-center gap-4 mb-4">
             <div className="flex items-center">
               {[...Array(5)].map((_, i) => (
                 <Star
@@ -178,11 +181,11 @@ if (product.blogs && product.blogs.length > 0) {
                 By {product.brand}
               </Link>
             )}
-          </div>
+          </div> */}
 
           <div className="mb-6">
             {product.discountPrice ? (
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2">
                 <span className="text-3xl font-bold text-[#1a5ca4]">{formatPrice(product.discountPrice)}</span>
                 <span className="text-xl text-gray-500 line-through">{formatPrice(product.price)}</span>
                 <span className="bg-green-100 text-green-800 text-sm font-medium px-2.5 py-0.5 rounded">
@@ -192,6 +195,17 @@ if (product.blogs && product.blogs.length > 0) {
             ) : (
               <span className="text-3xl font-bold text-[#1a5ca4]">{formatPrice(product.price)}</span>
             )}
+          </div>
+          {/* Stock Status */}
+          <div className="mb-6">
+            <div className="flex items-center gap-2">
+              <span className="font-medium">Availability:</span>
+              {product.inStock ? (
+                <span className="text-green-600">In Stock</span>
+              ) : (
+                <span className="text-red-600">Out of Stock</span>
+              )}
+            </div>
           </div>
 
           <div className="mb-6">
@@ -231,7 +245,7 @@ if (product.blogs && product.blogs.length > 0) {
           </div>
 
           {/* Add to Cart */}
-          <div className="flex flex-col sm:flex-row gap-4 mb-6">
+          <div className="flex flex-col sm:flex-row gap-4">
             <Button
               className="flex-1 bg-[#1a5ca4] hover:bg-[#0e4a8a]"
               onClick={handleAddToCart}
@@ -241,25 +255,12 @@ if (product.blogs && product.blogs.length > 0) {
             <Button variant="outline" className="flex-1">
               <Heart className="mr-2 h-5 w-5" /> Add to Wishlist
             </Button>
-            <Button variant="outline" size="icon">
-              <Share2 className="h-5 w-5" />
-            </Button>
           </div>
 
-          {/* Stock Status */}
-          <div className="mb-6">
-            <div className="flex items-center gap-2">
-              <span className="font-medium">Availability:</span>
-              {product.inStock ? (
-                <span className="text-green-600">In Stock</span>
-              ) : (
-                <span className="text-red-600">Out of Stock</span>
-              )}
-            </div>
-          </div>
+          
 
           {/* Shipping & Returns */}
-          <div className="p-4 bg-gray-50 rounded-lg">
+          {/* <div className="p-4 bg-gray-50 rounded-lg mt-6 ">
             <div className="flex flex-col gap-2 text-sm">
               <div className="flex items-center gap-2">
                 <span className="font-medium">Free Shipping:</span>
@@ -274,7 +275,7 @@ if (product.blogs && product.blogs.length > 0) {
                 <span>30-day money-back guarantee</span>
               </div>
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
 

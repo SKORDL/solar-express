@@ -156,7 +156,7 @@ export default function BestSellers() {
               </div>
 
               <Button
-                className="w-full bg-gradient-to-r from-[#1a5ca4] to-[#2563eb] hover:from-[#0e4a8a] hover:to-[#1d4ed8] text-white font-medium py-2.5 rounded-lg transition-all duration-300"
+                className="w-full bg-[#1a5ca4] text-white font-medium py-2.5 rounded-lg transition-all duration-300"
                 onClick={(e) => {
                   e.preventDefault()
                   // Add to cart logic
