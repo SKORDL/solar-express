@@ -1,5 +1,6 @@
 const express = require("express");
 const { authMiddleware, isAdmin } = require("../middlewares/authMiddleware");
+const { uploadBrandFiles } = require("../middlewares/uploadBrandImage");
 
 const {
   getBrandBySlug,
@@ -7,11 +8,25 @@ const {
   getFeaturedBrands,
   getBrandProducts,
   createBrand,
+  updateBrand,
 } = require("../controller/brandController");
 
 const router = express.Router();
 
-router.post("/new/create", authMiddleware, isAdmin, createBrand);
+router.post(
+  "/new/create",
+  authMiddleware,
+  isAdmin,
+  uploadBrandFiles,
+  createBrand
+);
+router.put(
+  "/update/:slug",
+  authMiddleware,
+  isAdmin,
+  uploadBrandFiles,
+  updateBrand
+);
 router.get("/", getAllBrands);
 router.get("/featured", getFeaturedBrands);
 router.get("/:slug/products", getBrandProducts);

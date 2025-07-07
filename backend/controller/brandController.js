@@ -1,49 +1,88 @@
 const Brand = require("../models/BrandModel");
 const asyncHandler = require("express-async-handler");
 const Product = require("../models/ProductsModel");
+const { cloudinaryUploadImage } = require("../utils/cloudinary");
 
 const createBrand = asyncHandler(async (req, res) => {
-  const {
-    name,
-    slug,
-    tagline,
-    description,
-    logo,
-    banner,
-    thumbnail,
-    establishedYear,
-    headquarters,
-    featuredProducts,
-    productCategories,
-    isFeatured,
-    isActive,
-    createdBy,
-  } = req.body;
+  try {
+    // Upload logo
+    let logoUrl = req.body.logo;
+    if (req.files && req.files.logo && req.files.logo[0]) {
+      const uploadRes = await cloudinaryUploadImage(
+        `data:${
+          req.files.logo[0].mimetype
+        };base64,${req.files.logo[0].buffer.toString("base64")}`,
+        "image"
+      );
+      logoUrl = uploadRes.url;
+    }
 
-  const brandExists = await Brand.findOne({ slug });
-  if (brandExists) {
-    res.status(400);
-    throw new Error("Brand with this slug already exists");
+    // Upload banner
+    let bannerUrl = req.body.banner;
+    if (req.files && req.files.banner && req.files.banner[0]) {
+      const uploadRes = await cloudinaryUploadImage(
+        `data:${
+          req.files.banner[0].mimetype
+        };base64,${req.files.banner[0].buffer.toString("base64")}`,
+        "image"
+      );
+      bannerUrl = uploadRes.url;
+    }
+
+    // Upload thumbnail (optional)
+    let thumbnailUrl = req.body.thumbnail;
+    if (req.files && req.files.thumbnail && req.files.thumbnail[0]) {
+      const uploadRes = await cloudinaryUploadImage(
+        `data:${
+          req.files.thumbnail[0].mimetype
+        };base64,${req.files.thumbnail[0].buffer.toString("base64")}`,
+        "image"
+      );
+      thumbnailUrl = uploadRes.url;
+    }
+
+    const {
+      name,
+      slug,
+      tagline,
+      description,
+      establishedYear,
+      headquarters,
+      featuredProducts,
+      productCategories,
+      isFeatured,
+      isActive,
+      createdBy,
+    } = req.body;
+
+    const brandExists = await Brand.findOne({ slug });
+    if (brandExists) {
+      res.status(400);
+      throw new Error("Brand with this slug already exists");
+    }
+
+    const brand = await Brand.create({
+      name,
+      slug,
+      tagline,
+      description,
+      logo: logoUrl,
+      banner: bannerUrl,
+      thumbnail: thumbnailUrl,
+      establishedYear,
+      headquarters,
+      featuredProducts,
+      productCategories,
+      isFeatured,
+      isActive,
+      createdBy,
+    });
+
+    res.status(201).json(brand);
+  } catch (err) {
+    console.error("Brand Creation Error:", err);
+    res.status(500).json({ success: false, message: "Brand creation failed" });
   }
-
-  const brand = await Brand.create({
-    name,
-    slug,
-    tagline,
-    description,
-    logo,
-    banner,
-    thumbnail,
-    establishedYear,
-    headquarters,
-    featuredProducts,
-    productCategories,
-    isFeatured,
-    isActive,
-    createdBy,
-  });
-
-  res.status(201).json(brand);
 });
 
 // @desc    Get brand by slug
@@ -173,6 +212,94 @@ const getBrandProducts = asyncHandler(async (req, res) => {
   });
 });
 
+// @desc    Update an existing brand
+// @route   PUT /api/brands/:slug
+// @access  Public
+const updateBrand = asyncHandler(async (req, res) => {
+  const { slug } = req.params;
+
+  try {
+    // Find the brand by slug
+    const brand = await Brand.findOne({ slug });
+    if (!brand) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Brand not found" });
+    }
+
+    // Upload new logo if provided
+    if (req.files && req.files.logo && req.files.logo[0]) {
+      const uploadRes = await cloudinaryUploadImage(
+        `data:${
+          req.files.logo[0].mimetype
+        };base64,${req.files.logo[0].buffer.toString("base64")}`,
+        "image"
+      );
+      brand.logo = uploadRes.url;
+    }
+
+    // Upload new banner if provided
+    if (req.files && req.files.banner && req.files.banner[0]) {
+      const uploadRes = await cloudinaryUploadImage(
+        `data:${
+          req.files.banner[0].mimetype
+        };base64,${req.files.banner[0].buffer.toString("base64")}`,
+        "image"
+      );
+      brand.banner = uploadRes.url;
+    }
+
+    // Upload new thumbnail if provided
+    if (req.files && req.files.thumbnail && req.files.thumbnail[0]) {
+      const uploadRes = await cloudinaryUploadImage(
+        `data:${
+          req.files.thumbnail[0].mimetype
+        };base64,${req.files.thumbnail[0].buffer.toString("base64")}`,
+        "image"
+      );
+      brand.thumbnail = uploadRes.url;
+    }
+
+    // Update other fields if provided in req.body
+    const updatableFields = [
+      "name",
+      "tagline",
+      "description",
+      "establishedYear",
+      "headquarters",
+      "featuredProducts",
+      "productCategories",
+      "isFeatured",
+      "isActive",
+      "createdBy",
+    ];
+    updatableFields.forEach((field) => {
+      if (typeof req.body[field] !== "undefined") {
+        brand[field] = req.body[field];
+      }
+    });
+
+    // If slug is being updated, check for uniqueness
+    if (req.body.slug && req.body.slug !== brand.slug) {
+      const slugExists = await Brand.findOne({ slug: req.body.slug });
+      if (slugExists) {
+        return res.status(400).json({
+          success: false,
+          message: "Brand with this slug already exists",
+        });
+      }
+      brand.slug = req.body.slug;
+    }
+
+    await brand.save();
+
+    res.status(200).json({ success: true, brand });
+  } catch (err) {
+    console.error("Brand Update Error:", err);
+    res.status(500).json({ success: false, message: "Brand update failed" });
+  }
+});
+
 // Helper function for default banner
 const getDefaultBanner = (brandName) => {
   // Implement your default banner logic or use a placeholder
@@ -187,4 +314,5 @@ module.exports = {
   getFeaturedBrands,
   getBrandProducts,
   createBrand,
+  updateBrand,
 };

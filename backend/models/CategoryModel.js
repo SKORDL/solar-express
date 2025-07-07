@@ -33,9 +33,6 @@ const categorySchema = new mongoose.Schema(
     description: {
       type: String,
     },
-    image: {
-      type: String, // URL to category image
-    },
     icon: {
       type: String, // Icon class or URL
     },

@@ -3,6 +3,8 @@ const asyncHandler = require("express-async-handler");
 const Product = require("../models/ProductsModel");
 const Category = require("../models/CategoryModel");
 const categoryFilters = require("../utils/categoryFilters");
+const { cloudinaryUploadImage } = require("../utils/cloudinary");
+const validateMongoId = require("../utils/validateMongoId"); // or your inline function
 
 // Helper to get sort object from query
 function getSortObject(sort) {
@@ -306,6 +308,37 @@ const getProductsByCategory = asyncHandler(async (req, res) => {
 // Create product
 const createProduct = asyncHandler(async (req, res) => {
   try {
+    // 1. Handle images
+    let imageUrls = [];
+    if (req.files && req.files.images) {
+      for (const file of req.files.images) {
+        const uploadRes = await cloudinaryUploadImage(
+          `data:${file.mimetype};base64,${file.buffer.toString("base64")}`,
+          "image"
+        );
+        imageUrls.push(uploadRes.url);
+      }
+    }
+
+    // 2. Handle documents (PDFs)
+    let documentObjs = [];
+    if (req.files && req.files.documents) {
+      for (const file of req.files.documents) {
+        const uploadRes = await cloudinaryUploadImage(
+          `data:${file.mimetype};base64,${file.buffer.toString("base64")}`,
+          "raw"
+        );
+        documentObjs.push({
+          name: file.originalname,
+          type: file.mimetype,
+          url: uploadRes.url,
+          size: Math.round(file.size / 1024),
+          uploadedAt: new Date(),
+        });
+      }
+    }
+
+    // 3. Create product with uploaded file URLs
     const {
       name,
       slug,
@@ -319,8 +352,6 @@ const createProduct = asyncHandler(async (req, res) => {
       keyFeatures,
       specifications,
       variants,
-      documents,
-      images,
       videos,
       tags,
       shippingInfo,
@@ -340,8 +371,8 @@ const createProduct = asyncHandler(async (req, res) => {
       keyFeatures,
       specifications,
       variants,
-      documents,
-      images,
+      images: imageUrls,
+      documents: documentObjs,
       videos,
       tags,
       shippingInfo,
@@ -361,7 +392,41 @@ const createProduct = asyncHandler(async (req, res) => {
 // Update product
 const updateProduct = asyncHandler(async (req, res) => {
   const { id } = req.params;
-  const updateData = req.body;
+  let updateData = { ...req.body };
+
+  // 1. Handle images
+  let imageUrls = [];
+  if (req.files && req.files.images) {
+    for (const file of req.files.images) {
+      const uploadRes = await cloudinaryUploadImage(
+        `data:${file.mimetype};base64,${file.buffer.toString("base64")}`,
+        "image"
+      );
+      imageUrls.push(uploadRes.url);
+    }
+    // Optionally, append or replace images
+    updateData.images = (updateData.images || []).concat(imageUrls);
+  }
+
+  // 2. Handle documents (PDFs)
+  let documentObjs = [];
+  if (req.files && req.files.documents) {
+    for (const file of req.files.documents) {
+      const uploadRes = await cloudinaryUploadImage(
+        `data:${file.mimetype};base64,${file.buffer.toString("base64")}`,
+        "raw"
+      );
+      documentObjs.push({
+        name: file.originalname,
+        type: file.mimetype,
+        url: uploadRes.url,
+        size: Math.round(file.size / 1024),
+        uploadedAt: new Date(),
+      });
+    }
+    // Optionally, append or replace documents
+    updateData.documents = (updateData.documents || []).concat(documentObjs);
+  }
 
   const updatedProduct = await Product.findByIdAndUpdate(id, updateData, {
     new: true,
@@ -431,6 +496,68 @@ const debog = asyncHandler(async (req, res) => {
   }
 });
 
+const uploadImages = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  validateMongoId(id);
+
+  try {
+    const product = await Product.findById(id);
+    if (!product) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Product not found" });
+    }
+
+    // Handle images
+    let imageUrls = [];
+    if (req.files && req.files.images) {
+      for (const file of req.files.images) {
+        // Upload to Cloudinary as image
+        const uploadRes = await cloudinaryUploadImage(
+          `data:${file.mimetype};base64,${file.buffer.toString("base64")}`,
+          "image"
+        );
+        imageUrls.push(uploadRes.url);
+      }
+      // Add to product images array
+      product.images = product.images.concat(imageUrls);
+    }
+
+    // Handle documents (PDFs)
+    let documentObjs = [];
+    if (req.files && req.files.documents) {
+      for (const file of req.files.documents) {
+        // Upload to Cloudinary as raw
+        const uploadRes = await cloudinaryUploadImage(
+          `data:${file.mimetype};base64,${file.buffer.toString("base64")}`,
+          "raw"
+        );
+        documentObjs.push({
+          name: file.originalname,
+          type: file.mimetype,
+          url: uploadRes.url,
+          size: Math.round(file.size / 1024),
+          uploadedAt: new Date(),
+        });
+      }
+      // Add to product documents array
+      product.documents = product.documents.concat(documentObjs);
+    }
+
+    await product.save();
+
+    res.json({
+      success: true,
+      images: imageUrls,
+      documents: documentObjs,
+      product,
+    });
+  } catch (error) {
+    console.error("Image upload error:", error);
+    res.status(500).json({ success: false, message: "Image upload failed" });
+  }
+});
+
 module.exports = {
   createProduct,
   updateProduct,
@@ -440,4 +567,5 @@ module.exports = {
   getProductsByCategory,
   getCategoryFilters,
   debog,
+  uploadImages,
 };
